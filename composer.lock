@@ -5,6 +5,7 @@
         "This file is @generated automatically"
     ],
     "hash": "4d38323552a12f8f52f9683161ee16ee",
+    "content-hash": "e6248d16254c51fa3f51f031a65363b1",
     "packages": [
         {
             "name": "dnode/dnode",
@@ -228,19 +229,24 @@
         },
         {
             "name": "steveorevo/string",
-            "version": "1.0",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Steveorevo/String.git",
-                "reference": "a1e661c02968dcb46aba0a7b957e079db7e54391"
+                "reference": "99311a1bca560b9d619b3251421eacc94e548010"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Steveorevo/String/zipball/a1e661c02968dcb46aba0a7b957e079db7e54391",
-                "reference": "a1e661c02968dcb46aba0a7b957e079db7e54391",
+                "url": "https://api.github.com/repos/Steveorevo/String/zipball/99311a1bca560b9d619b3251421eacc94e548010",
+                "reference": "99311a1bca560b9d619b3251421eacc94e548010",
                 "shasum": ""
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Steveorevo\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -260,7 +266,12 @@
                 }
             ],
             "description": "Implements OOP String handling with useful parsing functions.",
-            "time": "2015-07-24 17:11:25"
+            "homepage": "https://github.com/Steveorevo/String",
+            "keywords": [
+                "OOP",
+                "string"
+            ],
+            "time": "2015-09-30 21:15:27"
         }
     ],
     "packages-dev": [],
