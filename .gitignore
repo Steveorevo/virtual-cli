@@ -1,2 +1,8 @@
 vendor/
 
+.idea/.name
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/virtual-cli.iml
+.idea/workspace.xml
