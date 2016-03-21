@@ -141,7 +141,11 @@ class VirtualCLIConsole {
 				}
 			}
 			if ($this->time_up > 0) {
-				$this->time_up = $this->time_up - 1;
+				static $timer;
+				if ($timer !== time()) {
+					$this->time_up = $this->time_up - 1;
+					$timer = time();
+				}
 				if ( $this->time_up === 0 ) {
 					$this->state = Self::RUNNING;
 					$this->wait_for = null;
