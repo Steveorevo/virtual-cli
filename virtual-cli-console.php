@@ -128,20 +128,22 @@ class VirtualCLIConsole {
 		 * Check for expected completion, wait, or timeout.
 		 */
 		if ($this->state === Self::PENDING  && $this->wait_for !== null) {
+			static $timer;
 			if (is_string($this->wait_for)) {
 				if (false !== strpos( $this->last_result, $this->wait_for)) {
 					$this->state = Self::RUNNING;
 					$this->wait_for = null;
 				}
 			}else{
-				$this->wait_for = $this->wait_for - 1;
+				if ($timer !== time()) {
+					$this->wait_for = $this->wait_for - 1;
+				}
 				if ($this->wait_for <= 0) {
 					$this->state = Self::RUNNING;
 					$this->wait_for = null;
 				}
 			}
 			if ($this->time_up > 0) {
-				static $timer;
 				if ($timer !== time()) {
 					$this->time_up = $this->time_up - 1;
 					$timer = time();
