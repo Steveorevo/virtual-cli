@@ -6,3 +6,5 @@ vendor/
 .idea/vcs.xml
 .idea/virtual-cli.iml
 .idea/workspace.xml
+virtual-cli-server.log
+virtual-cli-server.pid
