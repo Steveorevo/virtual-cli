@@ -1,7 +1,7 @@
 <?php
 namespace Steveorevo;
 
-require('virtual-cli-console.php');
+require('VirtualCLIConsole.php');
 
 class VirtualCLIServer
 {
