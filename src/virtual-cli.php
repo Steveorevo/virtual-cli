@@ -186,13 +186,20 @@ class VirtualCLI
 //	}
 //	echo $myVCLI[$y]->get_results();
 //}
-$myVCLI = new VirtualCLI("Test");
+global $myVCLI;
+$myVCLI = new VirtualCLI("Test", 10, 15);
 $myVCLI->add_command("echo Hello");
 $myVCLI->get_results(function($results){
 	echo $results;
+	global $myVCLI;
+	$myVCLI->add_command("echo mars");
+	$myVCLI->get_results(function($results){
+		echo $results;
+		global $myVCLI;
+		$myVCLI->closeAll();
+	});
 });
-$myVCLI->add_command("echo Goodbye");
-$myVCLI->get_results(function($results){
-	echo $results;
-});
-$myVCLI->closeAll();
+//$myVCLI->add_command("echo Goodbye");
+//$myVCLI->get_results(function($results){
+//	echo $results;
+//});
