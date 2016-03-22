@@ -3,6 +3,7 @@
  * This Virtual CLI Console is the actual native CLI on the given platform and is invoked by the Virtual CLI Server
  * to execute commands.
  */
+namespace Steveorevo;
 
 class VirtualCLIConsole {
 	/**

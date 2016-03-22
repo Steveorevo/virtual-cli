@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4d38323552a12f8f52f9683161ee16ee",
-    "content-hash": "e6248d16254c51fa3f51f031a65363b1",
+    "hash": "261ec16835f3c8ac88c0b7c6f6d2d0d5",
+    "content-hash": "48f83a081dbb34678e0fdffc4a1f17ec",
     "packages": [
         {
             "name": "dnode/dnode",
@@ -226,52 +226,6 @@
                 "stream"
             ],
             "time": "2014-02-16 19:48:52"
-        },
-        {
-            "name": "steveorevo/string",
-            "version": "1.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Steveorevo/String.git",
-                "reference": "99311a1bca560b9d619b3251421eacc94e548010"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Steveorevo/String/zipball/99311a1bca560b9d619b3251421eacc94e548010",
-                "reference": "99311a1bca560b9d619b3251421eacc94e548010",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Steveorevo\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Stephen J. Carnam",
-                    "email": "steve@steveorevo.com",
-                    "homepage": "http://steveorevo.com",
-                    "role": "developer"
-                },
-                {
-                    "name": "Michael Scribellito",
-                    "email": "mscribellito@gmail.com",
-                    "homepage": "http://mscribellito.com",
-                    "role": "developer"
-                }
-            ],
-            "description": "Implements OOP String handling with useful parsing functions.",
-            "homepage": "https://github.com/Steveorevo/String",
-            "keywords": [
-                "OOP",
-                "string"
-            ],
-            "time": "2015-09-30 21:15:27"
         }
     ],
     "packages-dev": [],

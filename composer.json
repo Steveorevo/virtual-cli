@@ -1,6 +1,24 @@
 {
+  "name": "steveorevo/virtual-cli",
+  "description": "Provides programmable interactive access to the native OS command line. Commands can be virtually typed, paused, or terminated. Methods can be used to retrieve progress and output.",
+  "keywords": ["cli","terminal", "console"],
+  "homepage": "https://github.com/Steveorevo/virtual-cli",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Stephen J. Carnam",
+      "email": "steve@steveorevo.com",
+      "homepage": "http://steveorevo.com",
+      "role": "developer"
+    }
+  ],
   "require": {
-    "dnode/dnode": "0.2.*",
-    "Steveorevo/String": "1.*"
+    "dnode/dnode": "0.2.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Acme\\":"src/"
+    }
   }
 }

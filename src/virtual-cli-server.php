@@ -1,9 +1,6 @@
 <?php
+namespace Steveorevo;
 
-// Include Composer-generated autoloader
-require('trace.php');
-
-require('vendor/autoload.php');
 require('virtual-cli-console.php');
 
 class VirtualCLIServer
