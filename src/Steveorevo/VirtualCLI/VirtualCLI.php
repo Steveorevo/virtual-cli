@@ -3,7 +3,7 @@
  * A Virtual CLI instance provides programmable interactive access to the native OS command line interface. Commands
  * can be queued, executed, paused, or terminated. Methods can be used to retrieve queue progress and output.
  */
-namespace Steveorevo;
+namespace Steveorevo\VirtualCLI;
 use React\EventLoop\StreamSelectLoop;
 use DNode\DNode;
 
@@ -36,8 +36,8 @@ class VirtualCLI
 	public function __construct($title = "", $priority = 10, $timeout = 60, $port=7088, $boot = "")
 	{
 		// Connect to the server and submit the command
-		$this->loop = new React\EventLoop\StreamSelectLoop();
-		$this->server = new DNode\DNode($this->loop);
+		$this->loop = new StreamSelectLoop();
+		$this->server = new DNode($this->loop);
 		$this->id = uniqid() . dechex(rand(0, 32000));
 		$this->priority = $priority;
 		$this->timeout = $timeout;
@@ -69,7 +69,7 @@ class VirtualCLI
 		}
 
 		// Create a command to send to the server
-		$c = new stdClass();
+		$c = new \stdClass();
 		$c->command_id = uniqid() . dechex(rand(0, 32000));
 		$c->timeout = $this->timeout;
 		$c->priority = $this->priority;
@@ -148,9 +148,9 @@ class VirtualCLI
 				// Be nice, launching on some CPUs take longer
 				if (fmod(abs($this->retries),2)) {
 					echo "Attempting to launch the Virtual CLI out-of-process server.\n";
-					$boot = $this->boot . 'php ' . dirname( __FILE__ ) . '/virtual-cli-server.php -p' . $this->port;
-					$pid = dirname( __FILE__ ) . '../virtual-cli-server.pid';
-					$log = dirname( __FILE__ ) . '../virtual-cli-server.log';
+					$boot = $this->boot . 'php ' . dirname( __FILE__ ) . '/VirtualCLIServer.php -p' . $this->port;
+					$pid = dirname( __FILE__ ) . '/../VirtualCLIServer.pid';
+					$log = dirname( __FILE__ ) . '/../VirtualCLIServer.log';
 					@unlink( $log );
 					@unlink( $pid );
 					exec( sprintf( "%s > %s 2>&1 & echo $! >> %s", $boot, $log, $pid ) );
@@ -173,33 +173,3 @@ class VirtualCLI
 		}
 	}
 }
-//
-///**
-// * Example...
-// */
-////$myVCLI = [];
-////for ($y = 0; $y < 10; $y++) {
-////	$myVCLI[$y] = new VirtualCLI("Test " . $y);
-////	for ($x = 0; $x < 10; $x++) {
-////		$msg = "echo $y$x";
-////		$myVCLI[$y]->add_command($msg);
-////	}
-////	echo $myVCLI[$y]->get_results();
-////}
-//global $myVCLI;
-//$myVCLI = new VirtualCLI("Test", 10, 15);
-//$myVCLI->add_command("echo Hello");
-//$myVCLI->get_results(function($results){
-//	echo $results;
-//	global $myVCLI;
-//	$myVCLI->add_command("echo mars");
-//	$myVCLI->get_results(function($results){
-//		echo $results;
-//		global $myVCLI;
-//		$myVCLI->closeAll();
-//	});
-//});
-////$myVCLI->add_command("echo Goodbye");
-////$myVCLI->get_results(function($results){
-////	echo $results;
-////});

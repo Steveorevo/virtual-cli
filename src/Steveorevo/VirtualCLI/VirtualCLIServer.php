@@ -1,9 +1,9 @@
 <?php
-namespace Steveorevo;
-use Steveorevo\VirtualCLIConsole;
+namespace Steveorevo\VirtualCLI;
+use Steveorevo\VirtualCLI\VirtualCLIConsole;
 use React\EventLoop\StreamSelectLoop;
 use DNode\DNode;
-require __DIR__ . '/../../../../../vendor/autoload.php';
+require __DIR__ . '/../../../../../../vendor/autoload.php';
 
 class VirtualCLIServer
 {
