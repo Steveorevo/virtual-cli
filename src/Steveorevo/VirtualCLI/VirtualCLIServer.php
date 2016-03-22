@@ -1,7 +1,9 @@
 <?php
 namespace Steveorevo;
-
-require('VirtualCLIConsole.php');
+use Steveorevo\VirtualCLIConsole;
+use React\EventLoop\StreamSelectLoop;
+use DNode\DNode;
+require __DIR__ . '/../../../../../vendor/autoload.php';
 
 class VirtualCLIServer
 {
@@ -13,9 +15,9 @@ class VirtualCLIServer
 
     public function __construct()
     {
-        $this->loop = new React\EventLoop\StreamSelectLoop();
+        $this->loop = new StreamSelectLoop();
         $this->loop->addPeriodicTimer(0.01, array($this, 'processing'));
-        $this->server = new DNode\DNode($this->loop, $this);
+        $this->server = new DNode($this->loop, $this);
         $this->port = intval(@getopt('p:')['p']) | 7088;
         $this->server->listen($this->port);
         $this->loop->run();
@@ -72,4 +74,3 @@ class VirtualCLIServer
 }
 global $virtual_cli_server;
 $virtual_cli_server = new VirtualCLIServer();
-

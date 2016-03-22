@@ -4,6 +4,8 @@
  * can be queued, executed, paused, or terminated. Methods can be used to retrieve queue progress and output.
  */
 namespace Steveorevo;
+use React\EventLoop\StreamSelectLoop;
+use DNode\DNode;
 
 class VirtualCLI
 {
