@@ -44,6 +44,8 @@ class VirtualCLIConsole {
 		$init_cmd = '/bin/bash';
 		if (false !== stripos(PHP_OS, "win") && false === stripos(PHP_OS, "Darwin")) { // cygwin, win, not Dar'win'
 			$init_cmd = 'cmd.exe';
+			// TO DO: performance issue on windows, bypass native and jump to bash.exe, determine how to locate runtime and revisit eol issue.
+			$init_cmd = 'C:\xampplite\ds-plugins\ds-cli\platform\win32\cygwin\bin\bash.exe';
 			$this->eol = "\r\n";
 		}
 		$cwd = getenv("HOME");
@@ -118,6 +120,8 @@ class VirtualCLIConsole {
 		 * Gather results from CLI.
 		 */
 		$this->last_result = stream_get_contents($this->pipes[1]);
+		// TO DO: performance issue on windows, use fgets appears that it might resolve/but we need to compensate for output
+		//$this->last_result = fgets($this->pipes[1]);
 		if (false !== $this->last_result) {
 			if (0 !== strlen( $this->last_result)) {
 				$this->results .= $this->last_result;
