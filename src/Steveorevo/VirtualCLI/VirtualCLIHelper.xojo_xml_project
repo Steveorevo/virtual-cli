@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RBProject version="2014r2" FormatVersion="2" MinIDEVersion="20070100">
+<block type="Project" ID="0">
+ <ProjectSavedInVers>2014.02</ProjectSavedInVers>
+ <MajorVersion>1</MajorVersion>
+ <MinorVersion>0</MinorVersion>
+ <SubVersion>0</SubVersion>
+ <Release>3</Release>
+ <NonRelease>0</NonRelease>
+ <Region></Region>
+ <ShortVersion>1.0.0</ShortVersion>
+ <LongVersion></LongVersion>
+ <InfoVersion></InfoVersion>
+ <AutoIncVersion>0</AutoIncVersion>
+ <DefaultViewID>0</DefaultViewID>
+ <ProjectType>1</ProjectType>
+ <DefaultLanguage>0</DefaultLanguage>
+ <CurrentLanguage>0</CurrentLanguage>
+ <DefaultEncoding>0</DefaultEncoding>
+ <BuildFlags>8464</BuildFlags>
+ <UseBuildsFolder>1</UseBuildsFolder>
+ <WebApp>0</WebApp>
+ <Icon>
+ </Icon>
+ <MacCreator></MacCreator>
+ <BuildCarbonName>snt</BuildCarbonName>
+ <BuildCarbonMachOName>snt</BuildCarbonMachOName>
+ <BundleIdentifier>com.serverpress.snt</BundleIdentifier>
+ <WinMDICaption></WinMDICaption>
+ <BuildWinName>VirtualCLIHelper.exe</BuildWinName>
+ <BuildWinMDI>0</BuildWinMDI>
+ <BuildWinCompanyName>ServerPress, LLC</BuildWinCompanyName>
+ <BuildWinProductName>Virtual CLI Helper</BuildWinProductName>
+ <BuildWinInternalName></BuildWinInternalName>
+ <BuildWinFileDescription>Virtual CLI Helper for Windows</BuildWinFileDescription>
+ <UseGDIPlus>0</UseGDIPlus>
+ <BuildLinuxX86Name>snt</BuildLinuxX86Name>
+ <DebuggerCommandLine></DebuggerCommandLine>
+</block>
+<block type="Module" ID="1453129929">
+ <ObjName>Extends_String</ObjName>
+ <ObjContainerID>0</ObjContainerID>
+ <IsClass>0</IsClass>
+ <ItemFlags>1</ItemFlags>
+ <IsInterface>0</IsInterface>
+ <Compatibility></Compatibility>
+ <Method>
+  <ItemName>AddLastSlash</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function AddLastSlash(Extends sInput As String) As String</SourceLine>
+   <SourceLine>// Depending on the user platform, add the appropiate last slash</SourceLine>
+   <SourceLine>// if it isn't there already.</SourceLine>
+   <SourceLine>sInput = sInput.StripLastSlash</SourceLine>
+   <SourceLine>#If TargetMacOS</SourceLine>
+   <SourceLine>sInput.Append("/")</SourceLine>
+   <SourceLine>#Else</SourceLine>
+   <SourceLine>sInput.Append("\")</SourceLine>
+   <SourceLine>#Endif</SourceLine>
+   <SourceLine>Return sInput</SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends sInput As String</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Append</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Append(Extends ByRef sInput As String, sStuff As String)</SourceLine>
+   <SourceLine>// Append additional string content to ourself</SourceLine>
+   <SourceLine>sInput = sInput + sStuff</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends ByRef sInput As String, sStuff As String</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>CountString</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function CountString(Extends sSubject As String, sSearch As String) As Integer</SourceLine>
+   <SourceLine>// Return the number of occurances of sSearch in sSubject</SourceLine>
+   <SourceLine>Dim nCount As Integer</SourceLine>
+   <SourceLine>While InStr(sSubject, sSearch) &gt; 0</SourceLine>
+   <SourceLine>sSubject = sSubject.DelLeftMost(sSearch)</SourceLine>
+   <SourceLine>nCount = nCount + 1</SourceLine>
+   <SourceLine>Wend</SourceLine>
+   <SourceLine>Return nCount</SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends sSubject As String, sSearch As String</ItemParams>
+  <ItemResult>Integer</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DelLeftMost</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function DelLeftMost(Extends sInput As String, sFind As String) As String</SourceLine>
+   <SourceLine>Dim n As Integer</SourceLine>
+   <SourceLine>n = sInput.InStr(sFind)</SourceLine>
+   <SourceLine>if (n &gt; 0) then</SourceLine>
+   <SourceLine>return sInput.Right(Len(sInput) - n - Len(sFind) + 1)</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>return sInput</SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends sInput As String, sFind As String</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>DelRightMost</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function DelRightMost(Extends sInput As String, sFind As String) As String</SourceLine>
+   <SourceLine>Dim n As Integer</SourceLine>
+   <SourceLine>n = sInput.InStrRev(sFind)</SourceLine>
+   <SourceLine>if (n &gt; 0) then</SourceLine>
+   <SourceLine>Return sInput.Left(n-1)</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Return sInput</SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends sInput As String, sFind As String</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>GetLeftMost</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function GetLeftMost(Extends sInput As String, sFind As String) As String</SourceLine>
+   <SourceLine>Dim n As Integer</SourceLine>
+   <SourceLine>n = sInput.InStr(sFind)</SourceLine>
+   <SourceLine>if (n &gt; 0) Then</SourceLine>
+   <SourceLine>return sInput.Left(n -1)</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>If sInput = sFind Then</SourceLine>
+   <SourceLine>return ""</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>return sInput</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends sInput As String, sFind As String</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>GetRightMost</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function GetRightMost(Extends sInput As String, sFind As String) As String</SourceLine>
+   <SourceLine>Dim n As Integer</SourceLine>
+   <SourceLine>n = sInput.InStrRev(sFind)</SourceLine>
+   <SourceLine>if (n &gt; 0) then</SourceLine>
+   <SourceLine>return sInput.Right(Len(sInput) - (n + Len(sFind) -1))</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>return sInput</SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends sInput As String, sFind As String</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>InStrRev</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function InStrRev(Extends source As String, startPos As Integer = - 1, substr As String) As Integer</SourceLine>
+   <SourceLine>// Similar to InStr, but searches backwards from the given position</SourceLine>
+   <SourceLine>// (or if startPos = -1, then from the end of the string).</SourceLine>
+   <SourceLine>// If substr can't be found, returns 0.</SourceLine>
+   <SourceLine>Dim srcLen As Integer = source.Len</SourceLine>
+   <SourceLine>if startPos = -1 then startPos = srcLen</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Here's an easy way...</SourceLine>
+   <SourceLine>// There may be a faster implementation, but then again, there may not -- it probably</SourceLine>
+   <SourceLine>// depends on the particulars of the data.</SourceLine>
+   <SourceLine>Dim reversedSource As String = source.Reverse()</SourceLine>
+   <SourceLine>Dim reversedSubstr As String = substr.Reverse()</SourceLine>
+   <SourceLine>Dim reversedPos As Integer</SourceLine>
+   <SourceLine>reversedPos = InStr( srcLen - startPos + 1, reversedSource, reversedSubstr )</SourceLine>
+   <SourceLine>if reversedPos &lt; 1 then return 0</SourceLine>
+   <SourceLine>return srcLen - reversedPos - substr.Len + 2</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends source As String, startPos As Integer = - 1, substr As String</ItemParams>
+  <ItemResult>Integer</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Quoted</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Quoted(Extends source As String) As String</SourceLine>
+   <SourceLine>// Return the string as quoted (surrounded by ASCII 34)</SourceLine>
+   <SourceLine>Return Chr(34) + source + Chr(34)</SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends source As String</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Reverse</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Reverse(Extends s As String) As String</SourceLine>
+   <SourceLine>// Return s with the characters in reverse order.</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>if Len(s) &lt; 2 then return s</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim characters() as String = Split( s, "" )</SourceLine>
+   <SourceLine>Dim leftIndex as Integer = 0</SourceLine>
+   <SourceLine>Dim rightIndex as Integer = UBound(characters)</SourceLine>
+   <SourceLine>#pragma BackgroundTasks False</SourceLine>
+   <SourceLine>While leftIndex &lt; rightIndex</SourceLine>
+   <SourceLine>Dim temp as String = characters(leftIndex)</SourceLine>
+   <SourceLine>characters(leftIndex) = characters(rightIndex)</SourceLine>
+   <SourceLine>characters(rightIndex) = temp</SourceLine>
+   <SourceLine>leftIndex = leftIndex + 1</SourceLine>
+   <SourceLine>rightIndex = rightIndex - 1</SourceLine>
+   <SourceLine>Wend</SourceLine>
+   <SourceLine>Return Join( characters, "" )</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends s As String</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>StripLastSlash</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function StripLastSlash(Extends sInput As String) As String</SourceLine>
+   <SourceLine>If Right(sInput, 1) = "/" Or Right(sInput, 1) = "\" Then</SourceLine>
+   <SourceLine>sInput = Left(sInput, Len(sInput) -1)</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Return sInput</SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends sInput As String</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>StripTags</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function StripTags(Extends sInput As String) As String</SourceLine>
+   <SourceLine>// Removes markup tags &lt;something&gt; &lt;/else&gt;</SourceLine>
+   <SourceLine>Dim sParse As String</SourceLine>
+   <SourceLine>If Not (sInput.InStr("&lt;") &gt; 0 And sInput.InStr("&gt;") &gt; 0) Then</SourceLine>
+   <SourceLine>Return sInput</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>While sInput.InStr("&lt;") &gt; 0 And sInput.InStr("&gt;") &gt; 0</SourceLine>
+   <SourceLine>sParse = sParse + sInput.GetLeftMost("&lt;")</SourceLine>
+   <SourceLine>sInput = sInput.DelLeftMost("&gt;")</SourceLine>
+   <SourceLine>Wend</SourceLine>
+   <SourceLine>sParse = sParse + sInput</SourceLine>
+   <SourceLine>Return sParse</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>Extends sInput As String</ItemParams>
+  <ItemResult>String</ItemResult>
+ </Method>
+ <Property>
+  <ItemName>EOL</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>EOL As String</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>EOL As String</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <SetAccessor>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Set</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Set</SourceLine>
+  </SetAccessor>
+  <GetAccessor>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Get</SourceLine>
+   <SourceLine>Return Chr(10)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Get</SourceLine>
+  </GetAccessor>
+ </Property>
+ <ViewBehavior>
+  <ViewProperty>
+   <ObjName>Index</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <PropertyValue>-2147483648</PropertyValue>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Left</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Name</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <ItemType>String</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Super</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <ItemType>String</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Top</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>EOL</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <ItemType>String</ItemType>
+   <EditorType>MultiLineEditor</EditorType>
+  </ViewProperty>
+ </ViewBehavior>
+</block>
+<block type="Module" ID="1661039123">
+ <ObjName>App</ObjName>
+ <ObjContainerID>0</ObjContainerID>
+ <IsClass>1</IsClass>
+ <Superclass>ConsoleApplication</Superclass>
+ <ItemFlags>1</ItemFlags>
+ <IsInterface>0</IsInterface>
+ <IsApplicationObject>1</IsApplicationObject>
+ <Compatibility></Compatibility>
+ <HookInstance>
+  <ItemName>Run</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function Run(args() as String) As Integer</SourceLine>
+   <SourceLine>// Create our shell</SourceLine>
+   <SourceLine>Dim myShell As New Shell</SourceLine>
+   <SourceLine>myShell.Timeout = -1</SourceLine>
+   <SourceLine>myShell.Mode = 2</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Run commands interactively</SourceLine>
+   <SourceLine>Dim nLastSec As Integer</SourceLine>
+   <SourceLine>Dim nMissed As Integer</SourceLine>
+   <SourceLine>Dim sBuffer As String</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>While nMissed &lt; 10</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Track missing heartbeats &gt; 5 seconds then exit</SourceLine>
+   <SourceLine>// to prevent orphaned shell process</SourceLine>
+   <SourceLine>Dim d As New Date</SourceLine>
+   <SourceLine>If d.Second &lt;&gt; nLastSec Then</SourceLine>
+   <SourceLine>nMissed = nMissed + 1</SourceLine>
+   <SourceLine>nLastSec = d.Second</SourceLine>
+   <SourceLine>End if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Read buffer</SourceLine>
+   <SourceLine>sBuffer = sBuffer + StdIn.Read(1)</SourceLine>
+   <SourceLine>If sBuffer.InStr(EOL) &gt; 0 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Reset pulse</SourceLine>
+   <SourceLine>nMissed = 0</SourceLine>
+   <SourceLine>Dim sLine As String = DecodeURLComponent(sBuffer.GetLeftMost(EOL))</SourceLine>
+   <SourceLine>sBuffer = sBuffer.DelLeftMost(EOL)</SourceLine>
+   <SourceLine>If sLine = "exitsnt" Then</SourceLine>
+   <SourceLine>Exit While</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Process only when there is a complete line</SourceLine>
+   <SourceLine>If sLine.Len &gt; 0 Then</SourceLine>
+   <SourceLine>If myShell.IsRunning = False Then</SourceLine>
+   <SourceLine>myShell.Execute(sLine)</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>myShell.Write(sLine)</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Return responses</SourceLine>
+   <SourceLine>Dim sText As String = myShell.ReadAll</SourceLine>
+   <SourceLine>If sText &lt;&gt; "" Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Long outputs also resets the pulse</SourceLine>
+   <SourceLine>nMissed = 0</SourceLine>
+   <SourceLine>Print EncodeURLComponent(sText)</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Print Chr(10)</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>App.DoEvents 100</SourceLine>
+   <SourceLine>Wend</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Close out</SourceLine>
+   <SourceLine>If myShell.IsRunning Then</SourceLine>
+   <SourceLine>myShell.Write(Chr(3)) // ctrl+c</SourceLine>
+   <SourceLine>myShell.Write(Chr(10))</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>If myShell.IsRunning Then</SourceLine>
+   <SourceLine>myShell.WriteLine("exit") // exit shell</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>myShell.Close</SourceLine>
+   <SourceLine>myShell = Nil</SourceLine>
+   <SourceLine>Quit</SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+ </HookInstance>
+ <PropertyVal Name="MenuBar"><Hex bytes="1">30</Hex></PropertyVal>
+ <ViewBehavior>
+ </ViewBehavior>
+</block>
+<block type="BuildAutomation" ID="1944629714">
+ <ObjName>Build Automation</ObjName>
+ <ObjContainerID>0</ObjContainerID>
+</block>
+<block type="BuildStepsList" ID="837996311">
+ <ObjName>Linux</ObjName>
+ <ObjContainerID>1944629714</ObjContainerID>
+</block>
+<block type="BuildProjectStep" ID="1006258757">
+ <ObjName>Build</ObjName>
+ <ObjContainerID>837996311</ObjContainerID>
+</block>
+<block type="IDEScriptStep" ID="1367081346">
+ <ObjName>build_linux</ObjName>
+ <ObjContainerID>837996311</ObjContainerID>
+ <StepAppliesTo>0</StepAppliesTo>
+ <ScriptText><Hex bytes="508">234966205461726765744D61634F530D43616C6C20446F5368656C6C436F6D6D616E642822726D202D72662022202B2043687228333429202B20222450524F4A4543545F504154482F6C696E75782F736E7422202B2043687228333429290D43616C6C20446F5368656C6C436F6D6D616E642822726D202D72662022202B2043687228333429202B20222450524F4A4543545F504154482F6C696E75782F736E74204C69627322202B2043687228333429290D43616C6C20446F5368656C6C436F6D6D616E6428226D762022202B2043687228333429202B20222450524F4A4543545F504154482F4275696C6473202D20736E742E786F6A6F5F786D6C5F70726F6A6563742F4C696E75782F736E742F736E7422202B2043687228333429202B20222022202B2043687228333429202B20222450524F4A4543545F504154482F6C696E757822202B2043687228333429290D43616C6C20446F5368656C6C436F6D6D616E6428226D762022202B2043687228333429202B20222450524F4A4543545F504154482F4275696C6473202D20736E742E786F6A6F5F786D6C5F70726F6A6563742F4C696E75782F736E742F736E74204C69627322202B2043687228333429202B20222022202B2043687228333429202B20222450524F4A4543545F504154482F6C696E757822202B2043687228333429290D23456E644966</Hex></ScriptText>
+</block>
+<block type="BuildStepsList" ID="757225580">
+ <ObjName>Mac OS X</ObjName>
+ <ObjContainerID>1944629714</ObjContainerID>
+</block>
+<block type="BuildProjectStep" ID="702247744">
+ <ObjName>Build</ObjName>
+ <ObjContainerID>757225580</ObjContainerID>
+</block>
+<block type="IDEScriptStep" ID="642813292">
+ <ObjName>build_mac</ObjName>
+ <ObjContainerID>757225580</ObjContainerID>
+ <StepAppliesTo>0</StepAppliesTo>
+ <ScriptText><Hex bytes="522">234966205461726765744D61634F530D43616C6C20446F5368656C6C436F6D6D616E642822726D202D72662022202B2043687228333429202B20222450524F4A4543545F504154482F6D61632F736E7422202B2043687228333429290D43616C6C20446F5368656C6C436F6D6D616E642822726D202D72662022202B2043687228333429202B20222450524F4A4543545F504154482F6D61632F736E74204C69627322202B2043687228333429290D43616C6C20446F5368656C6C436F6D6D616E6428226D762022202B2043687228333429202B20222450524F4A4543545F504154482F4275696C6473202D20736E742E786F6A6F5F786D6C5F70726F6A6563742F4D6163204F5320582028496E74656C292F736E742F736E7422202B2043687228333429202B20222022202B2043687228333429202B20222450524F4A4543545F504154482F6D616322202B2043687228333429290D43616C6C20446F5368656C6C436F6D6D616E6428226D762022202B2043687228333429202B20222450524F4A4543545F504154482F4275696C6473202D20736E742E786F6A6F5F786D6C5F70726F6A6563742F4D6163204F5320582028496E74656C292F736E742F736E74204C69627322202B2043687228333429202B20222022202B2043687228333429202B20222450524F4A4543545F504154482F6D616322202B2043687228333429290D23456E644966</Hex></ScriptText>
+</block>
+<block type="BuildStepsList" ID="107726302">
+ <ObjName>Windows</ObjName>
+ <ObjContainerID>1944629714</ObjContainerID>
+</block>
+<block type="BuildProjectStep" ID="227260099">
+ <ObjName>Build</ObjName>
+ <ObjContainerID>107726302</ObjContainerID>
+</block>
+<block type="IDEScriptStep" ID="1920271040">
+ <ObjName>build_win</ObjName>
+ <ObjContainerID>107726302</ObjContainerID>
+ <StepAppliesTo>0</StepAppliesTo>
+ <ScriptText><Hex bytes="520">234966205461726765744D61634F530D43616C6C20446F5368656C6C436F6D6D616E642822726D202D72662022202B2043687228333429202B20222450524F4A4543545F504154482F77696E33322F736E742E65786522202B2043687228333429290D43616C6C20446F5368656C6C436F6D6D616E642822726D202D72662022202B2043687228333429202B20222450524F4A4543545F504154482F77696E33322F736E74204C69627322202B2043687228333429290D43616C6C20446F5368656C6C436F6D6D616E6428226D762022202B2043687228333429202B20222450524F4A4543545F504154482F4275696C6473202D20736E742E786F6A6F5F786D6C5F70726F6A6563742F57696E646F77732F736E742F736E742E65786522202B2043687228333429202B20222022202B2043687228333429202B20222450524F4A4543545F504154482F77696E333222202B2043687228333429290D43616C6C20446F5368656C6C436F6D6D616E6428226D762022202B2043687228333429202B20222450524F4A4543545F504154482F4275696C6473202D20736E742E786F6A6F5F786D6C5F70726F6A6563742F57696E646F77732F736E742F736E74204C69627322202B2043687228333429202B20222022202B2043687228333429202B20222450524F4A4543545F504154482F77696E333222202B2043687228333429290D23456E644966</Hex></ScriptText>
+</block>
+<block type="UIState" ID="0">
+ <StudioWindowState>
+  <Editors>
+   <EditorCount>1</EditorCount>
+   <Editor>
+    <EditorIndex>0</EditorIndex>
+    <EditorLocation></EditorLocation>
+    <EditorPath></EditorPath>
+   </Editor>
+   <SelectedTab>0</SelectedTab>
+  </Editors>
+ </StudioWindowState>
+</block>
+</RBProject>
