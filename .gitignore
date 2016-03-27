@@ -8,4 +8,7 @@ vendor/
 .idea/workspace.xml
 virtual-cli-server.log
 virtual-cli-server.pid
-src/Steveorevo/VirtualCLI/Builds*
+<<<<<<< HEAD
+src/Steveorevo/VirtualCLI/Builds - VirtualCLIHelper.xojo_xml_project
+=======
+>>>>>>> parent of 0bd6dc9... Ignore Xojo build folder.
