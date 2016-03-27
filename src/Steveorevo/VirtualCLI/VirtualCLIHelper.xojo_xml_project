@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>8464</BuildFlags>
+ <BuildFlags>272</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -455,7 +455,7 @@
    <SourceLine>nMissed = 0</SourceLine>
    <SourceLine>Dim sLine As String = DecodeURLComponent(sBuffer.GetLeftMost(EOL))</SourceLine>
    <SourceLine>sBuffer = sBuffer.DelLeftMost(EOL)</SourceLine>
-   <SourceLine>If sLine = "exitsnt" Then</SourceLine>
+   <SourceLine>If sLine = "exithelper" Then</SourceLine>
    <SourceLine>Exit While</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
@@ -552,8 +552,9 @@
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation></EditorLocation>
+    <EditorLocation>App.Run</EditorLocation>
     <EditorPath></EditorPath>
+    <EditingPartID>1661039123</EditingPartID>
    </Editor>
    <SelectedTab>0</SelectedTab>
   </Editors>

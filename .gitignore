@@ -8,3 +8,4 @@ vendor/
 .idea/workspace.xml
 virtual-cli-server.log
 virtual-cli-server.pid
+src/Steveorevo/VirtualCLI/Builds*
