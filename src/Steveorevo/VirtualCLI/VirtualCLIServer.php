@@ -16,7 +16,7 @@ class VirtualCLIServer
     public function __construct()
     {
         $this->loop = new StreamSelectLoop();
-        $this->loop->addPeriodicTimer(0.01, array($this, 'processing'));
+        $this->loop->addPeriodicTimer(0.25, array($this, 'processing'));
         $this->server = new DNode($this->loop, $this);
         $this->port = intval(@getopt('p:')['p']) | 7088;
         $this->server->listen($this->port);

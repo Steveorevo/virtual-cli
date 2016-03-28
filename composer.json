@@ -14,7 +14,8 @@
     }
   ],
   "require": {
-    "dnode/dnode": "0.2.*"
+    "dnode/dnode": "0.2.*",
+    "steveorevo/string": "1.*"
   },
   "autoload": {
     "psr-0": {

@@ -16,6 +16,7 @@ class VirtualCLIConsole {
 
 	public $pause_request = false;
 	public $estimate_total = 0;
+	public $is_windows = false;
 	public $last_result = "";
 	public $wait_for = null;
 	public $commands = [];
@@ -34,6 +35,10 @@ class VirtualCLIConsole {
 	 */
 	public function __construct()
 	{
+		// Check for Windows
+		if (false !== stripos(PHP_OS, "win") && false === stripos(PHP_OS, "Darwin")) { // cygwin, win, not Dar'win'
+			$this->is_windows = true;
+		}
 
 		// Create our native console
 		$descriptor_spec = array(
@@ -42,13 +47,11 @@ class VirtualCLIConsole {
 			2 => array("pipe", "a")   // stderr is a pipe that the child will write to
 		);
 		$init_cmd = '/bin/bash';
-		if (false !== stripos(PHP_OS, "win") && false === stripos(PHP_OS, "Darwin")) { // cygwin, win, not Dar'win'
-			$init_cmd = 'cmd.exe';
-			// TO DO: performance issue on windows, bypass native and jump to bash.exe, determine how to locate runtime and revisit eol issue.
-			$init_cmd = 'C:\xampplite\ds-plugins\ds-cli\platform\win32\cygwin\bin\bash.exe';
-			$this->eol = "\r\n";
-		}
 		$cwd = getenv("HOME");
+		if ($this->is_windows) { // Use non-blocking CLI helper on Windows
+			$init_cmd = __DIR__ . "\\VirtualCLIHelper.exe";
+			$cwd = getenv("HOMEPATH");
+		}
 		$this->process = proc_open(
 			$init_cmd,
 			$descriptor_spec,
@@ -59,6 +62,13 @@ class VirtualCLIConsole {
 		stream_set_blocking( $this->pipes[0], 0 );
 		stream_set_blocking( $this->pipes[1], 0 );
 		stream_set_blocking( $this->pipes[2], 0 );
+		if ($this->is_windows) {
+			$init_cmd = getenv("VIRTUAL_CLI_BOOT");
+			if (false === $init_cmd) {
+				$init_cmd = getenv("ComSpec");
+			}
+			fwrite($this->pipes[0], $init_cmd + Chr(10));
+		}
 	}
 
 	function add_command($c)
@@ -77,6 +87,9 @@ class VirtualCLIConsole {
 	 * Our process queued commands on the native shell.
 	 */
 	function process() {
+		if ($this->is_windows) {  // Send heartbeat on Windows to prevent blocking
+			fwrite($this->pipes[0], Chr(10));
+		}
 		if ($this->pause_request === true) return null;
 		if ($this->state === Self::DONE) return null;
 
@@ -88,6 +101,9 @@ class VirtualCLIConsole {
 				$c = array_shift($this->commands);
 				$command = $c->command;
 				$wait_for = $c->wait;
+				if ($this->is_windows) { // Encoding schema on Windows to overcome blocking
+					$command = rawurlencode($command) + Chr(10);
+				}
 				fwrite($this->pipes[0], $command);
 
 				// Reveal comments back to UI
@@ -119,16 +135,21 @@ class VirtualCLIConsole {
 		/**
 		 * Gather results from CLI.
 		 */
-		$this->last_result = stream_get_contents($this->pipes[1]);
-		// TO DO: performance issue on windows, use fgets appears that it might resolve/but we need to compensate for output
-		//$this->last_result = fgets($this->pipes[1]);
-		if (false !== $this->last_result) {
-			if (0 !== strlen( $this->last_result)) {
-				$this->results .= $this->last_result;
-				// TO DO: trigger progress callback
+		if ($this->is_windows) {  // Decoding schema on Windows to overcome blocking
+			$this->last_result .= fgets($this->pipes[1], 2);
+			if (false !== strpos($this->last_result, "\n")) {
+				$chunk = new String($this->last_result);
+				$this->results .= rawurldecode($chunk->getLeftMost("\n")->__toString());
+				$this->last_result = $chunk->delLeftMost("\n")->__toString();
+			}
+		}else{
+			$this->last_result = stream_get_contents($this->pipes[1]);
+			if (false !== $this->last_result) {
+				if (0 !== strlen( $this->last_result)) {
+					$this->results .= $this->last_result;
+				}
 			}
 		}
-
 		/**
 		 * Check for expected completion, wait, or timeout.
 		 */
