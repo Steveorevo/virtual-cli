@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>8464</BuildFlags>
+ <BuildFlags>272</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -366,7 +366,7 @@
    <SourceLine>sInput = sInput.ReplaceAll(Chr(n), "%" + Right(prefix + Hex(n), 2))</SourceLine>
    <SourceLine>Next n</SourceLine>
    <SourceLine>sInput = sInput.ReplaceAll(Chr(96), "%60")</SourceLine>
-   <SourceLine>For n = 123 to 255</SourceLine>
+   <SourceLine>For n = 123 to 127</SourceLine>
    <SourceLine>sInput = sInput.ReplaceAll(Chr(n), "%" + Right(prefix + Hex(n), 2))</SourceLine>
    <SourceLine>Next n</SourceLine>
    <SourceLine>sInput = sInput.ReplaceAll("*~%", "%25")</SourceLine>
@@ -503,7 +503,7 @@
    <SourceLine></SourceLine>
    <SourceLine>// Long outputs also resets the pulse</SourceLine>
    <SourceLine>nMissed = 0</SourceLine>
-   <SourceLine>Print sText.RawURLEncode()</SourceLine>
+   <SourceLine>Print sText.ReplaceAll(Chr(13)+Chr(10), Chr(10)).RawURLEncode()</SourceLine>
    <SourceLine>Else</SourceLine>
    <SourceLine>Print Chr(10)</SourceLine>
    <SourceLine>End If</SourceLine>
@@ -580,9 +580,9 @@
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation>Extends_String.RawURLEncode</EditorLocation>
+    <EditorLocation>App.Run</EditorLocation>
     <EditorPath></EditorPath>
-    <EditingPartID>1453129929</EditingPartID>
+    <EditingPartID>1661039123</EditingPartID>
    </Editor>
    <SelectedTab>0</SelectedTab>
   </Editors>
