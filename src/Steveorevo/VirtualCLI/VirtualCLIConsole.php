@@ -4,6 +4,7 @@
  * to execute commands.
  */
 namespace Steveorevo\VirtualCLI;
+use Steveorevo\String;
 
 class VirtualCLIConsole {
 	/**
