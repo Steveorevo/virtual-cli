@@ -1,0 +1,7 @@
+http://127.0.0.1:7088/vcli?s=HelloVCLI123&id=001&c=/bin/bash
+http://127.0.0.1:7088/vcli?s=HelloVCLI123&id=001&c=ls -la%0A
+http://127.0.0.1:7088/vcli?s=HelloVCLI123&id=001
+http://127.0.0.1:7088/vcli?s=HelloVCLI123&g=ids
+http://127.0.0.1:7088/vcli?s=HelloVCLI123&id=001&g=close
+http://127.0.0.1:7088/vcli?s=HelloVCLI123&g=ids
+http://127.0.0.1:7088/vcli?s=HelloVCLI123&g=quit
