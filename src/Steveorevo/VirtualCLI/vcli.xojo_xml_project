@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>0</SubVersion>
  <Release>0</Release>
- <NonRelease>10</NonRelease>
+ <NonRelease>11</NonRelease>
  <Region></Region>
  <ShortVersion>0.0.1</ShortVersion>
  <LongVersion>0.0.1</LongVersion>
@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>20880</BuildFlags>
+ <BuildFlags>29072</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -163,7 +163,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>SecurityKey As String = "HelloVCLI123"</SourceLine>
+   <SourceLine>SecurityKey As String</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -177,7 +177,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Port As Integer = 7088</SourceLine>
+   <SourceLine>Port As Integer</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -192,6 +192,18 @@
    <PropertyGroup>Behavior</PropertyGroup>
    <PropertyValue>False</PropertyValue>
    <ItemType>Boolean</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>SecurityKey</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>HelloVCLI123</PropertyValue>
+   <ItemType>String</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Port</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>7088</PropertyValue>
+   <ItemType>Integer</ItemType>
   </ViewProperty>
  </ViewBehavior>
 </block>
@@ -2013,6 +2025,7 @@
    <SourceLine></SourceLine>
    <SourceLine>// Create console if it doesn't exist or retrieve it</SourceLine>
    <SourceLine>Dim myVShell As VShell</SourceLine>
+   <SourceLine>If id &lt;&gt; "" Then</SourceLine>
    <SourceLine>If Not App.Shells.HasKey(id) Then</SourceLine>
    <SourceLine>myVShell = New VShell</SourceLine>
    <SourceLine>myVShell.DOB = New Date</SourceLine>
@@ -2030,6 +2043,12 @@
    <SourceLine>Else</SourceLine>
    <SourceLine>myVShell.History = myVShell.History + c</SourceLine>
    <SourceLine>myVShell.Write(c)</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>If Not (g = "quit" or g = "ids") Then</SourceLine>
+   <SourceLine>Response.Status = App.myHTTPServer.StatusOK</SourceLine>
+   <SourceLine>Exit Sub</SourceLine>
+   <SourceLine>End If</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Process any get info requests</SourceLine>
@@ -2241,9 +2260,9 @@
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation>App.Run</EditorLocation>
+    <EditorLocation>VCLI.HandleRequest</EditorLocation>
     <EditorPath></EditorPath>
-    <EditingPartID>712812485</EditingPartID>
+    <EditingPartID>1995174002</EditingPartID>
    </Editor>
    <SelectedTab>0</SelectedTab>
   </Editors>
