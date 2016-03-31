@@ -9,3 +9,4 @@ vendor/
 virtual-cli-server.log
 virtual-cli-server.pid
 src/Steveorevo/VirtualCLI/Builds - VirtualCLIHelper.xojo_xml_project
+src/Steveorevo/VirtualCLI/vcli.debug/vcli.debug Libs
