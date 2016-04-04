@@ -1,175 +1,134 @@
 <?php
 /**
  * A Virtual CLI instance provides programmable interactive access to the native OS command line interface. Commands
- * can be queued, executed, paused, or terminated. Methods can be used to retrieve queue progress and output.
+ * can be queued, prioritized, sequentially executed, paused, and terminated. Methods can be used to retrieve queue
+ * progress and output.
  */
 namespace Steveorevo\VirtualCLI;
-use React\EventLoop\StreamSelectLoop;
-use DNode\DNode;
+use Steveorevo\VirtualCLI\VCLIManager;
+use Steveorevo\String;
 
-class VirtualCLI
-{
-	public $connected = false;
-	public $callbacks = [];
-	public $commands = [];
-	public $retries = -30;
-	public $server = null;
-	public $priority = 10;
-	public $timeout = 60;
-	public $timer = null;
-	public $loop = null;
-	public $title = "";
-	public $boot = "";
+// Ensure Virtual CLI Manager is initialized
+VCLIManager::init();
+
+class VirtualCLI {
 	public $eol = "\n";
 	public $id = null;
-	public $port = 0;
 
 	/**
-	 * Creates an Virtual CLI (job) object to submit commands to the Virtual CLI Server.
+	 * Creates an Virtual CLI (job) object to submit commands to the native vcli service.
 	 *
-	 * @param string $title The name of the job to add to the Virtual CLI Server.
-	 * @param int $priority The priority for the job to execute. Lower numbers execute earlier.
+	 * @param string id A unique ID to identify the command line interface session.
 	 * @param int $timeout The amount of time allocated for any given command to execute before a timeout occurs.
-	 * @param int $port The optional port number for the client and server to communicate on.
-	 * @param string $boot Optional startup command (for setting env. variables, etc.).
+	 * @param string $shell The initial shell to use for the CLI. Defaults to native environment shell.
 	 */
-	public function __construct($title = "", $priority = 10, $timeout = 60, $port=7088, $boot = "")
-	{
-		// Connect to the server and submit the command
-		$this->loop = new StreamSelectLoop();
-		$this->server = new DNode($this->loop);
-		$this->id = uniqid() . dechex(rand(0, 32000));
-		$this->priority = $priority;
-		$this->timeout = $timeout;
-		$this->title = $title;
-		$this->boot = $boot;
-		$this->port = $port;
-	}
+	public function __construct($id = null, $timeout = 60, $shell = null) {
 
-	/**
-	 * Add a command to be processed by our native shell.
-	 *
-	 * @param string $command The command to execute on the native CLI shell.
-	 * @param null $wait Seconds (int) or the substring value to wait for from the command.
-	 * @param null $eol Allows override to send "press key" events (sans line feed or carriage return), i.e. Press 'Y'
-	 */
-	public function add_command($command = "", $wait = null, $eol = null)
-	{
-		if ($eol === null && $wait === null) {
-
-			// Default to adding a sequential command that won't continue until '***done***'.
-			$command .= ";echo ***done***";
-			$wait = '***done***';
-		}
-		if ($eol === null) {
-			$eol = $this->eol;
-		}
-		if ($wait === null) {
-			$wait = 1; // default to waiting at least 1 second
-		}
-
-		// Create a command to send to the server
-		$c = new \stdClass();
-		$c->command_id = uniqid() . dechex(rand(0, 32000));
-		$c->timeout = $this->timeout;
-		$c->priority = $this->priority;
-		$c->command = $command . $eol;
-		$c->title = $this->title;
-		$c->id = $this->id;
-		$c->wait = $wait;
-
-		// Ensure the Virtual CLI Server is up and running
-		$this->launch();
-
-		// Invoke add_command on the server
-		$this->server->connect($this->port, function ($remote, $connection) use ($c) {
-			$remote->add_command($c, function() use ($connection) {
-				$connection->end(); // Note: use callback to keep socket in sync.
-			});
-		} );
-		$this->loop->run();
-		$this->loop->stop();
-	}
-
-	public function get_results($cb)
-	{
-		// Invoke add_command on the server
-		$this->server->connect($this->port, function ($remote, $connection) use($cb) {
-			$remote->get_results($this->id, function($results) use ($connection, $cb) {
-				$connection->end(); // Note: use callback to keep socket in sync.
-				$cb($results);
-			});
-		} );
-		$this->loop->run();
-		$this->loop->stop();
-	}
-	public function close()
-	{
-		// Invoke close on the server
-		$this->server->connect($this->port, function ($remote, $connection) {
-			$remote->close($this->id, function() use ($connection) {
-				$connection->end(); // Note: use callback to keep socket in sync.
-			});
-		} );
-		$this->loop->run();
-		$this->loop->stop();
-	}
-	public function closeAll()
-	{
-		// Invoke closeAll on the server
-		$this->server->connect($this->port, function ($remote, $connection) {
-			$remote->closeAll(function() use ($connection) {
-				$connection->end(); // Note: use callback to keep socket in sync.
-			});
-		} );
-		$this->loop->run();
-		$this->loop->stop();
-	}
-	public function running()
-	{
-		echo "Running\n";
-	}
-
-	/**
-	 * Launch the out-of-process Virtual CLI Server if it's not already running on the given port.
-	 *
-	 */
-	public function launch()
-	{
-		$this->connected = @fsockopen("127.0.0.1", $this->port);
-		if (false === $this->connected) {
-			if ($this->retries === 0) {
-				echo "Virtual CLI out-of-process timeout.\n";
-				$this->loop->cancelTimer($this->timer);
-				$this->timer = null;
-				return;
+		// Windows default usually c:\windows\System32\cmd.exe from ComSpec and /bin/bash from SHELL on *nix
+		if ($shell === null) {
+			if (VCLIManager::$platform === 'win32') {
+				$shell = getenv("ComSpec");
 			}else{
-
-				// Be nice, launching on some CPUs take longer
-				if (fmod(abs($this->retries),2)) {
-					echo "Attempting to launch the Virtual CLI out-of-process server.\n";
-					$boot = $this->boot . 'php ' . dirname( __FILE__ ) . '/VirtualCLIServer.php -p' . $this->port;
-					$pid = dirname( __FILE__ ) . '/../VirtualCLIServer.pid';
-					$log = dirname( __FILE__ ) . '/../VirtualCLIServer.log';
-					@unlink( $log );
-					@unlink( $pid );
-					exec( sprintf( "%s > %s 2>&1 & echo $! >> %s", $boot, $log, $pid ) );
-				}
-
-				// Retry/relaunch if need be over next 30 seconds
-				if (null === $this->timer) {
-					$this->timer = $this->loop->addPeriodicTimer(1, array($this, 'launch'));
-					$this->loop->run();
-				}
-				$this->retries++;
-			}
-		}else {
-			@fclose( $this->connected );
-			if (null !== $this->timer) {
-				$this->loop->cancelTimer($this->timer);
-				$this->loop->stop();
-				$this->timer = null;
+				$shell = getenv("SHELL");
 			}
 		}
+
+		// Create unique id if none supplied
+		if ($id === null) {
+			$id = uniqid() . dechex(rand(0, 32000));
+		}
+		$this->id = $id;
+
+		// Create the native shell instance
+		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key . '&a=create';
+		$url .= "&id=" . rawurlencode($this->id) . "&w=" . $timeout . "&c=" . rawurlencode($shell);
+		@file_get_contents($url);
 	}
+//
+//		// Create unique id for this VirtualCLI instance
+//      $this->id = uniqid() . dechex(rand(0, 32000));
+//
+//
+//		// Create unique security key for all VirtualCLI instances to use
+//		if (VirtualCLI::$security_key === '') {
+//			VirtualCLI::$security_key = uniqid() . dechex(rand(0, 32000));
+//		}
+//
+//		// Check for existing vcli instance
+//		$process_id = false;
+//		$cmd = '"' . __DIR__  . "/Builds - vcli.xojo_xml_project/";
+//		if ($this->platform === 'win32') {
+//			exec("tasklist.exe", $ps);
+//			foreach($ps as $p) {
+//				if (false !== strpos($p, "vcli.exe --port")) {
+//					$p = new String($p);
+//					$process_id = intval($p->delLeftMost("vcli.exe")->trim()->getLeftMost(" ")->__toString());
+//					break;
+//				}
+//			}
+//			$cmd .= 'Windows\vcli\vcli.exe" --port ' . $this->port . ' --security_key ' . VirtualCLI::$security_key;
+//			$cmd =  str_replace('/', '\\', $cmd);
+//			$cmd = 'start /b "vcli" ' . $cmd;
+//
+//			// Windows default is usually c:\windows\System32\cmd.exe
+//			if ($shell === null) {
+//				$shell = getenv("ComSpec");
+//			}
+//		}else{
+//			$process_id =  exec("ps -a | awk '/[v]cli\\/vcli/{print $1}'") | false;
+//			if ($this->platform === 'linux') {
+//				$cmd .= 'Mac OS X (Intel)/vcli/vcli --port ' . $this->port . ' --security_key ';
+//				$cmd .= VirtualCLI::$security_key . '" > /dev/null 2>&1 &';
+//			}else{
+//				$cmd .= 'Linux/vcli/vcli --port ' . $this->port . ' --security_key ' . VirtualCLI::$security_key;
+//				$cmd .= '" > /dev/null 2>&1 &';
+//			}
+//
+//			// Linux, Darwin default is usually /bin/bash
+//			if ($shell === null) {
+//				$shell = getenv("SHELL");
+//			}
+//		}
+//
+//		// Launch vcli instance
+//		if (false === $process_id) {
+//			if ($this->platform === 'win32') {
+//				pclose(popen($cmd, "r"));
+//			}else{
+//				exec($cmd);
+//			}
+//		}
+//
+//		// Start the session
+//		$url = 'http://127.0.0.1:' . $this->port . '/vcli?s=' . VirtualCLI::$security_key . '&id=' . $this->id;
+//		$url .= '&c=' . rawurlencode($shell);
+//		$url . "\n";
+//		file_get_contents($url);
+//	}
+//
+//	/**
+//	 * Add a command to be processed by our native shell.
+//	 *
+//	 * @param string $command The command to execute on the native CLI shell.
+//	 * @param null $wait Seconds (int) or the substring value to wait for from the command.
+//	 * @param null $callback An optional callback to invoke when the #wait parameter has been met.
+//	 * @param null $eol Allows override to send "press key" events (sans line feed or carriage return), i.e. Press 'Y'
+//	 */
+//	public function add_command($command = "", $wait = null, $callback = null, $eol = null)
+//	{
+//		if ($eol === null && $wait === null) {
+//
+//			// Default to adding a sequential command that won't continue until '***done***'.
+//			$command .= ";echo ***done***";
+//			$wait = '***done***';
+//		}
+//		if ($eol === null) {
+//			$eol = $this->eol;
+//		}
+//		if ($wait === null) {
+//			$wait = 1; // default to waiting at least 1 second
+//		}
+//
+//
+//	}
 }
