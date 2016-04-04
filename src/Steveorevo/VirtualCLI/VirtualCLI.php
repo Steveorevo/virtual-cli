@@ -44,68 +44,7 @@ class VirtualCLI {
 		$url .= "&id=" . rawurlencode($this->id) . "&w=" . $timeout . "&c=" . rawurlencode($shell);
 		@file_get_contents($url);
 	}
-//
-//		// Create unique id for this VirtualCLI instance
-//      $this->id = uniqid() . dechex(rand(0, 32000));
-//
-//
-//		// Create unique security key for all VirtualCLI instances to use
-//		if (VirtualCLI::$security_key === '') {
-//			VirtualCLI::$security_key = uniqid() . dechex(rand(0, 32000));
-//		}
-//
-//		// Check for existing vcli instance
-//		$process_id = false;
-//		$cmd = '"' . __DIR__  . "/Builds - vcli.xojo_xml_project/";
-//		if ($this->platform === 'win32') {
-//			exec("tasklist.exe", $ps);
-//			foreach($ps as $p) {
-//				if (false !== strpos($p, "vcli.exe --port")) {
-//					$p = new String($p);
-//					$process_id = intval($p->delLeftMost("vcli.exe")->trim()->getLeftMost(" ")->__toString());
-//					break;
-//				}
-//			}
-//			$cmd .= 'Windows\vcli\vcli.exe" --port ' . $this->port . ' --security_key ' . VirtualCLI::$security_key;
-//			$cmd =  str_replace('/', '\\', $cmd);
-//			$cmd = 'start /b "vcli" ' . $cmd;
-//
-//			// Windows default is usually c:\windows\System32\cmd.exe
-//			if ($shell === null) {
-//				$shell = getenv("ComSpec");
-//			}
-//		}else{
-//			$process_id =  exec("ps -a | awk '/[v]cli\\/vcli/{print $1}'") | false;
-//			if ($this->platform === 'linux') {
-//				$cmd .= 'Mac OS X (Intel)/vcli/vcli --port ' . $this->port . ' --security_key ';
-//				$cmd .= VirtualCLI::$security_key . '" > /dev/null 2>&1 &';
-//			}else{
-//				$cmd .= 'Linux/vcli/vcli --port ' . $this->port . ' --security_key ' . VirtualCLI::$security_key;
-//				$cmd .= '" > /dev/null 2>&1 &';
-//			}
-//
-//			// Linux, Darwin default is usually /bin/bash
-//			if ($shell === null) {
-//				$shell = getenv("SHELL");
-//			}
-//		}
-//
-//		// Launch vcli instance
-//		if (false === $process_id) {
-//			if ($this->platform === 'win32') {
-//				pclose(popen($cmd, "r"));
-//			}else{
-//				exec($cmd);
-//			}
-//		}
-//
-//		// Start the session
-//		$url = 'http://127.0.0.1:' . $this->port . '/vcli?s=' . VirtualCLI::$security_key . '&id=' . $this->id;
-//		$url .= '&c=' . rawurlencode($shell);
-//		$url . "\n";
-//		file_get_contents($url);
-//	}
-//
+	
 //	/**
 //	 * Add a command to be processed by our native shell.
 //	 *
