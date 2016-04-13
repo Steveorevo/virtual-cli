@@ -62,6 +62,9 @@ class VCLIManager {
 		}else{
 
 			$process_id =  exec("ps -a | awk '/[v]cli\\/vcli/{print $1}'") | false;
+			if (!$process_id) {
+				$process_id =  exec("ps -a | awk '/[v]cli.debug\\/vcli.debug/{print $1}'") | false;
+			}
 			if (VCLIManager::$platform === 'darwin') {
 				$cmd .= 'Mac OS X (Intel)/vcli/vcli" --port ' . VCLIManager::$port . ' --security_key ';
 				$cmd .= VCLIManager::$security_key . ' > /dev/null 2>&1 &';
