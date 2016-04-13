@@ -44,6 +44,11 @@ class VirtualCLI {
 		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key . '&a=create';
 		$url .= "&id=" . rawurlencode($this->id) . '&w=' . $timeout . "&c=" . rawurlencode($shell);
 		@file_get_contents($url);
+
+		// Wait for initial result
+		while (false === $this->is_done(0)) {
+			usleep(100);
+		}
 	}
 
 	/**
@@ -54,7 +59,7 @@ class VirtualCLI {
 	 * @param null $callback An optional callback to invoke when $wait parameter has been met. Note: causes blocking.
 	 * @param null $eol Allows override to send "press key" events (sans line feed or carriage return), i.e. Press 'Y'
 	 *
-	 * @return int A unique number that identifies the submitted command.
+	 * @return int A unique number that identifies the submitted command, aka "command_id".
 	 */
 	public function add_command($command = "", $wait = null, $callback = null, $eol = null)
 	{
@@ -76,14 +81,40 @@ class VirtualCLI {
 		$url .= '&id=' . rawurlencode($this->id) . '&w=' . rawurlencode($wait) . '&c=' . rawurlencode($command . $eol);
 		$command_id = @file_get_contents($url);
 		if (null !== $callback) {
-			array_push($this->callbacks, array($command_id, $callback));
+
+			// Wait for completion
+			while (false === $this->is_done($command_id)) {
+				usleep(100);
+			}
+			call_user_func( $callback, $this->get_results($command_id));
 		}
 		return $command_id;
 	}
 
-	public function get_results() {
+	/**
+	 * Get the current results from the virtual commandline interface. Specify an optional command_id to retrieve a
+	 * command's specific results or none (-1 default) to return all results of the given session.
+	 *
+	 * @param int $command_id Optional id of a specific command to get the results for or -1 (default) to return all
+	 *
+	 * @return string The given results.
+	 */
+	public function get_results($command_id = -1) {
 		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key . '&a=result';
-		$url .= '&id=' . rawurlencode($this->id);
+		$url .= '&w=' . $command_id . '&id=' . rawurlencode($this->id);
 		return @file_get_contents($url);
+	}
+
+	/**
+	 * Check if the a given command or if all commands are done running on the virtual commandline interface.
+	 *
+	 * @param int $command_id Optional command_id to check for a completed command or none if all commands are done.
+	 *
+	 * @return bool Returns true if done or false if pending/running.
+	 */
+	public function is_done($command_id = -1) {
+		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key . '&a=is_done';
+		$url .= '&w=' . $command_id . '&id=' . rawurlencode($this->id);
+		return @file_get_contents($url) === "1";
 	}
 }
