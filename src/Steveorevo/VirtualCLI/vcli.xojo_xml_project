@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>0</SubVersion>
  <Release>0</Release>
- <NonRelease>24</NonRelease>
+ <NonRelease>29</NonRelease>
  <Region></Region>
  <ShortVersion>0.0.1</ShortVersion>
  <LongVersion>0.0.1</LongVersion>
@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>20880</BuildFlags>
+ <BuildFlags>29072</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -115,38 +115,41 @@
    <SourceLine>// Process commands</SourceLine>
    <SourceLine>For Each myVShell As VShell In App.Shells.Values</SourceLine>
    <SourceLine>If myVShell.State = VShell.RUNNING Then</SourceLine>
-   <SourceLine>If myVShell.Command.Ubound &gt; -1 Then</SourceLine>
-   <SourceLine>Dim c As String = myVShell.Command(0)</SourceLine>
-   <SourceLine>myVShell.Command.Remove(0)</SourceLine>
-   <SourceLine>myVShell.WaitFor = myVShell.Wait(0)</SourceLine>
-   <SourceLine>myVShell.Wait.Remove(0)</SourceLine>
+   <SourceLine>If myVShell.Commands.Ubound &gt; -1 Then</SourceLine>
+   <SourceLine>myVShell.LastCommand = myVShell.Commands(0)</SourceLine>
+   <SourceLine>myVShell.Commands.Remove(0)</SourceLine>
+   <SourceLine>myVShell.WaitFor = myVShell.Waits(0)</SourceLine>
+   <SourceLine>myVShell.Waits.Remove(0)</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Execute the command</SourceLine>
-   <SourceLine>myVShell.TimeUp = myVShell.Timeout</SourceLine>
+   <SourceLine>myVShell.TimeUp = myVShell.MaxTimeout</SourceLine>
    <SourceLine>If myVShell.IsRunning = False Then</SourceLine>
-   <SourceLine>myVShell.Execute(c)</SourceLine>
+   <SourceLine>myVShell.Execute(myVShell.LastCommand)</SourceLine>
    <SourceLine>Else</SourceLine>
-   <SourceLine>myVShell.Write(c)</SourceLine>
+   <SourceLine>myVShell.Write(myVShell.LastCommand)</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Hide passwords in response to prompts</SourceLine>
    <SourceLine>If myVShell.LastResult.Lowercase.Left(8) = "password" Then</SourceLine>
-   <SourceLine>myVShell.History = myVShell.History + "********" + App.EOL</SourceLine>
+   <SourceLine>myVShell.Results(myVShell.CommandIndex) = myVShell.Results(myVShell.CommandIndex) + "********" + App.EOL</SourceLine>
+   <SourceLine>myVShell.LastCommand =  "********"</SourceLine>
    <SourceLine>Else</SourceLine>
-   <SourceLine>myVShell.History = myVShell.History + c + App.EOL</SourceLine>
+   <SourceLine>myVShell.LastCommand = myVShell.LastCommand.ReplaceAll(";echo ***done***", "")</SourceLine>
+   <SourceLine>myVShell.Results(myVShell.CommandIndex) = myVShell.Results(myVShell.CommandIndex) + myVShell.LastCommand + App.EOL</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine>myVShell.LastResult = ""</SourceLine>
    <SourceLine>myVShell.State = VShell.PENDING</SourceLine>
    <SourceLine>Else</SourceLine>
    <SourceLine>myVShell.State = VShell.DONE</SourceLine>
-   <SourceLine>myVShell.History = myVShell.History.ReplaceAll(";echo ***done***", "").ReplaceAll("***done***", "")</SourceLine>
+   <SourceLine>myVShell.Results(myVShell.CommandIndex) = myVShell.Results(myVShell.CommandIndex).ReplaceAll("***done***", "")</SourceLine>
+   <SourceLine>myVShell.IsDone = myVShell.IsDone + CStr(myVShell.CommandIndex) + ","</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Gather results from CLI</SourceLine>
    <SourceLine>myVShell.LastResult = myVShell.ReadAll</SourceLine>
    <SourceLine>If myVShell.LastResult &lt;&gt; "" Then</SourceLine>
-   <SourceLine>myVShell.History = myVShell.History + myVShell.LastResult</SourceLine>
+   <SourceLine>myVShell.Results(myVShell.CommandIndex) = myVShell.Results(myVShell.CommandIndex) + myVShell.LastResult</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Check for expected completion, wait, or timeout.</SourceLine>
@@ -306,6 +309,16 @@
    <ObjName>Port</ObjName>
    <PropertyGroup>Behavior</PropertyGroup>
    <PropertyValue>7088</PropertyValue>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>EOL</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <ItemType>String</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>addCount</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
    <ItemType>Integer</ItemType>
   </ViewProperty>
  </ViewBehavior>
@@ -2130,12 +2143,15 @@
    <SourceLine>// Process the given action</SourceLine>
    <SourceLine>Select Case a</SourceLine>
    <SourceLine>Case "add"</SourceLine>
-   <SourceLine>// Add a command to the queue </SourceLine>
+   <SourceLine>// Add a command to the queue</SourceLine>
    <SourceLine>myVShell = App.Shells.Value(id)</SourceLine>
-   <SourceLine>myVShell.Command.Append(c)</SourceLine>
-   <SourceLine>myVShell.Wait.Append(w)</SourceLine>
+   <SourceLine>myVShell.Commands.Append(c)</SourceLine>
+   <SourceLine>myVShell.Waits.Append(w)</SourceLine>
+   <SourceLine>myVShell.Results.Append("")</SourceLine>
    <SourceLine>If myVShell.State = VShell.DONE Then myVShell.State = VShell.RUNNING</SourceLine>
-   <SourceLine>Response.Write(CStr(UBound(myVShell.Command)))</SourceLine>
+   <SourceLine>myVShell.CommandIndex = myVShell.CommandCount</SourceLine>
+   <SourceLine>Response.Write(CStr(myVShell.CommandIndex))</SourceLine>
+   <SourceLine>myVShell.CommandCount = myVShell.CommandCount + 1</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "create"</SourceLine>
    <SourceLine>// Create a new instance of a CLI</SourceLine>
@@ -2145,22 +2161,33 @@
    <SourceLine>myVShell.Mode = 2</SourceLine>
    <SourceLine>myVShell.State = VShell.RUNNING</SourceLine>
    <SourceLine>If w &lt;&gt; "" Then</SourceLine>
-   <SourceLine>myVShell.Timeout = Val(w)</SourceLine>
+   <SourceLine>myVShell.MaxTimeout = Val(w)</SourceLine>
    <SourceLine>myVShell.TimeUp = Val(w)</SourceLine>
    <SourceLine>End If</SourceLine>
-   <SourceLine>myVShell.Command.Append(c)</SourceLine>
-   <SourceLine>myVShell.Wait.Append(0)</SourceLine>
+   <SourceLine>myVShell.Commands.Append(c)</SourceLine>
+   <SourceLine>myVShell.Waits.Append(0)</SourceLine>
+   <SourceLine>myVShell.Results.Append("")</SourceLine>
+   <SourceLine>myVShell.CommandIndex = 0</SourceLine>
+   <SourceLine>myVShell.CommandCount = 1</SourceLine>
    <SourceLine>App.Shells.Value(id) = myVShell</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "result"</SourceLine>
-   <SourceLine>// Return the last result</SourceLine>
+   <SourceLine>// Return the last result for a given command id or everything</SourceLine>
    <SourceLine>myVShell = App.Shells.Value(id)</SourceLine>
-   <SourceLine>Response.Write(myVShell.LastResult)</SourceLine>
+   <SourceLine>Dim ci As Integer = Val(w)</SourceLine>
+   <SourceLine>If ci &gt; -1 And ci &lt; myVShell.CommandCount Then</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>Case "history" </SourceLine>
-   <SourceLine>// Return the given CLI history</SourceLine>
-   <SourceLine>myVShell = App.Shells.Value(id)</SourceLine>
-   <SourceLine>Response.Write(myVShell.History)</SourceLine>
+   <SourceLine>// Return a result from a given command</SourceLine>
+   <SourceLine>Response.Write(myVShell.Results(ci))</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Return everything</SourceLine>
+   <SourceLine>Dim sHistory As String</SourceLine>
+   <SourceLine>For Each r As String in myVShell.Results</SourceLine>
+   <SourceLine>sHistory = sHistory + r</SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine>Response.Write(sHistory)</SourceLine>
+   <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "quit"</SourceLine>
    <SourceLine>// Close all active shell consoles</SourceLine>
@@ -2177,7 +2204,7 @@
    <SourceLine>App.Shells.Clear</SourceLine>
    <SourceLine>Quit</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>Case "close" </SourceLine>
+   <SourceLine>Case "close"</SourceLine>
    <SourceLine>// Close the given shell console</SourceLine>
    <SourceLine>myVShell = App.Shells.Value(id)</SourceLine>
    <SourceLine>myVShell.Write(Chr(3) + Chr(3)) // double ctrl+c</SourceLine>
@@ -2186,11 +2213,28 @@
    <SourceLine>myVShell = Nil</SourceLine>
    <SourceLine>App.Shells.Remove(id)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>Case "age" </SourceLine>
+   <SourceLine>Case "age"</SourceLine>
    <SourceLine>// Return the age in seconds</SourceLine>
    <SourceLine>Dim d As New Date</SourceLine>
    <SourceLine>myVShell = App.Shells.Value(id)</SourceLine>
    <SourceLine>Response.Write(CStr(d.TotalSeconds - myVShell.DOB.TotalSeconds))</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "is_done"</SourceLine>
+   <SourceLine>// Return if a given command is done or if everything is finished</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(id)</SourceLine>
+   <SourceLine>If w = "-1" Then</SourceLine>
+   <SourceLine>If myVShell.State = VShell.DONE And myVShell.Commands.Ubound = -1 Then</SourceLine>
+   <SourceLine>Response.Write("1")</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Response.Write("0")</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>If myVShell.IsDone.InStr(","+w+",") &gt; 0 Then</SourceLine>
+   <SourceLine>Response.Write("1")</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Response.Write("0")</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "ids"</SourceLine>
    <SourceLine>// Return all shell ids</SourceLine>
@@ -2199,6 +2243,7 @@
    <SourceLine>Next</SourceLine>
    <SourceLine>End Select</SourceLine>
    <SourceLine>Response.Status = App.myHTTPServer.StatusOK</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End Sub</SourceLine>
   </ItemSource>
@@ -2269,30 +2314,30 @@
   <IsShared>0</IsShared>
  </Property>
  <Property>
-  <ItemName>Command()</ItemName>
+  <ItemName>Commands()</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Command() As String</SourceLine>
+   <SourceLine>Commands() As String</SourceLine>
    <SourceLine>Array containing the commands to execute on the given shell.</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>Command() As String</ItemDeclaration>
+  <ItemDeclaration>Commands() As String</ItemDeclaration>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
  <Property>
-  <ItemName>Wait()</ItemName>
+  <ItemName>Waits()</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Wait() As Variant</SourceLine>
+   <SourceLine>Waits() As Variant</SourceLine>
    <SourceLine>Array containing the keyword string or seconds integer to wait for before continuing to the next command.</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>Wait() As Variant</ItemDeclaration>
+  <ItemDeclaration>Waits() As Variant</ItemDeclaration>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
@@ -2311,16 +2356,16 @@
   <IsShared>0</IsShared>
  </Property>
  <Property>
-  <ItemName>Timeout</ItemName>
+  <ItemName>MaxTimeout</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Timeout As Integer = 60</SourceLine>
+   <SourceLine>MaxTimeout As Integer = 60</SourceLine>
    <SourceLine>Integer that represents the total number of seconds before a timeout will occur and the next command is processed. </SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>Timeout As Integer = 60</ItemDeclaration>
+  <ItemDeclaration>MaxTimeout As Integer = 60</ItemDeclaration>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
@@ -2330,7 +2375,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>TimeUp As Integer = 60</SourceLine>
+   <SourceLine>TimeUp As Integer</SourceLine>
    <SourceLine>Integer representing the number of seconds left before a timeout will occur.</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -2344,7 +2389,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Paused As Boolean = False</SourceLine>
+   <SourceLine>Paused As Boolean</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -2372,7 +2417,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>State As Integer = 0</SourceLine>
+   <SourceLine>State As Integer</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -2381,16 +2426,72 @@
   <IsShared>0</IsShared>
  </Property>
  <Property>
-  <ItemName>History</ItemName>
+  <ItemName>Results()</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>History As String</SourceLine>
-   <SourceLine>The complete history of transactions</SourceLine>
+   <SourceLine>Results() As String</SourceLine>
+   <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>History As String</ItemDeclaration>
+  <ItemDeclaration>Results() As String</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
+ <Property>
+  <ItemName>CommandIndex</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>CommandIndex As Integer</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>CommandIndex As Integer</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
+ <Property>
+  <ItemName>CommandCount</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>CommandCount As Integer</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>CommandCount As Integer</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
+ <Property>
+  <ItemName>LastCommand</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>LastCommand As String</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>LastCommand As String</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
+ <Property>
+  <ItemName>IsDone</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>IsDone As String = ","</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>IsDone As String = ","</ItemDeclaration>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
@@ -2461,6 +2562,34 @@
    <ItemType>String</ItemType>
    <EditorType>MultiLineEditor</EditorType>
   </ViewProperty>
+  <ViewProperty>
+   <ObjName>LastResult</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <ItemType>String</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>TimeUp</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>60</PropertyValue>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Paused</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>False</PropertyValue>
+   <ItemType>Boolean</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>State</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>LastCommandID</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
  </ViewBehavior>
  <Constant>
   <ItemName>PENDING</ItemName>
@@ -2499,7 +2628,7 @@
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation>App.Run</EditorLocation>
+    <EditorLocation>App.Process</EditorLocation>
     <EditorPath></EditorPath>
     <EditingPartID>712812485</EditingPartID>
    </Editor>
