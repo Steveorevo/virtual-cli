@@ -95,6 +95,20 @@ class VCLIManager {
 	}
 
 	/**
+	 * Used to send a command with arguments to the virtual commandline interface and retrieve results.
+	 *
+	 * @param array $args The associated array containing the object parameters to serialize and send to the vcli
+	 *
+	 * @return string The results from the virtual commandline interface service.
+	 */
+	static function send($args = []) {
+		$json = json_encode($args);
+		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key;
+		$url .= '&o=' . rawurlencode($json);
+		return @file_get_contents($url);
+	}
+
+	/**
 	 * Used to retrieve an existing virtual command line interface object by the given id. The object can be used to
 	 * add commands, get results, and query the status.
 	 *
