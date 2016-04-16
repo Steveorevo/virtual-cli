@@ -23,7 +23,7 @@ class VirtualCLI {
 	 * @param int $timeout The amount of time allocated for any given command to execute before a timeout occurs.
 	 * @param string $shell The initial shell to use for the CLI. Defaults to native environment shell.
 	 */
-	public function __construct($id = null, $timeout = 60, $shell = null) {
+	public function __construct($id = null, $timeout = 60, $shell = null, $wait = null) {
 
 		// Windows default usually c:\windows\System32\cmd.exe from ComSpec and /bin/bash from SHELL on *nix
 		if ($shell === null) {
@@ -34,6 +34,15 @@ class VirtualCLI {
 			}
 		}
 
+		// Windows default is "Microsoft Windows" and "bash" for *nix
+		if ($wait === null) {
+			if (VCLIManager::$platform === 'win32') {
+				$wait = "Microsoft Windows";
+			}else{
+				$wait = "bash";
+			}
+		}
+
 		// Create unique id if none supplied
 		if ($id === null) {
 			$id = uniqid() . dechex(rand(0, 32000));
@@ -41,14 +50,14 @@ class VirtualCLI {
 		$this->id = $id;
 
 		// Create the native shell instance
-		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key . '&a=create';
-		$url .= "&id=" . rawurlencode($this->id) . '&w=' . $timeout . "&c=" . rawurlencode($shell);
-		@file_get_contents($url);
-
-		// Wait for initial result
-		while (false === $this->is_done(0)) {
-			usleep(100);
-		}
+		$args = array(
+			'console_id'    =>  $this->id,
+			'timeout'       =>  $timeout,
+			'wait_for'      =>  $wait,
+			'action'        =>  'create',
+			'command'       =>  $shell
+		);
+		VCLIManager::send($args);
 	}
 
 	/**
@@ -76,14 +85,19 @@ class VirtualCLI {
 			$wait = 1; // default to waiting at least 1 second
 		}
 
+
 		// Send the command to the native shell instance
-		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key . '&a=add';
-		$url .= '&id=' . rawurlencode($this->id) . '&w=' . rawurlencode($wait) . '&c=' . rawurlencode($command . $eol);
-		$command_id = @file_get_contents($url);
+		$args = array(
+			'command'       =>  $command . $eol,
+			'console_id'    =>  $this->id,
+			'wait_for'      =>  $wait,
+			'action'        =>  'add'
+		);
+		$command_id = VCLIManager::send($args);
 		if (null !== $callback) {
 
 			// Wait for completion
-			while (false === $this->is_done($command_id)) {
+			while ("0" === $this->is_done($command_id)) {
 				usleep(100);
 			}
 			call_user_func( $callback, $this->get_results($command_id));
@@ -100,9 +114,34 @@ class VirtualCLI {
 	 * @return string The given results.
 	 */
 	public function get_results($command_id = -1) {
-		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key . '&a=result';
-		$url .= '&w=' . $command_id . '&id=' . rawurlencode($this->id);
-		return @file_get_contents($url);
+		$args = array(
+			'wait_for'      =>  $command_id,
+			'console_id'    =>  $this->id,
+			'action'        =>  'result'
+		);
+		$results = VCLIManager::send($args);
+
+		// Filter out password and ***done*** echos if present
+		$lines = explode(Chr(10), $results);
+		$results = "";
+		$prev = "";
+		foreach ($lines as $line) {
+			// Hide passwords in response to prompts
+			if (substr(strtolower($prev), 0, 8) === "password") {
+				$line = "********" . $this->eol;
+			}
+
+			// Hide done waiting mechanism
+			if (false !== strpos($line, "***done***")) {
+				$line = str_replace(";echo ***done***", "", $line);
+				$line = str_replace("***done***", "", $line);
+			}
+			$prev = $line;
+			$results .= $line . Chr(10);
+		}
+		//var_dump($lines);
+		//var_dump($results);
+		return $results;
 	}
 
 	/**
@@ -113,8 +152,11 @@ class VirtualCLI {
 	 * @return bool Returns true if done or false if pending/running.
 	 */
 	public function is_done($command_id = -1) {
-		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key . '&a=is_done';
-		$url .= '&w=' . $command_id . '&id=' . rawurlencode($this->id);
-		return @file_get_contents($url) === "1";
+		$args = array(
+			'wait_for'      =>  $command_id,
+			'console_id'    =>  $this->id,
+			'action'        =>  'is_done'
+		);
+		return VCLIManager::send($args);
 	}
 }
