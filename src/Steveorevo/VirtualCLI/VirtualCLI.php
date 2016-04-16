@@ -12,6 +12,7 @@ use Steveorevo\String;
 VCLIManager::init();
 
 class VirtualCLI {
+	public $concat_char = ";";
 	public $callbacks = [];
 	public $eol = "\n";
 	public $id = null;
@@ -19,11 +20,13 @@ class VirtualCLI {
 	/**
 	 * Creates an Virtual CLI (job) object to submit commands to the native vcli service.
 	 *
-	 * @param string id A unique ID to identify the command line interface session.
+	 * @param null $id A unique ID to identify the command line interface session.
 	 * @param int $timeout The amount of time allocated for any given command to execute before a timeout occurs.
 	 * @param string $shell The initial shell to use for the CLI. Defaults to native environment shell.
+	 * @param null $wait Optional initial substring to wait for when the CLI is initialized.
+	 * @param string $concat_char Optional override for the command concatenation character.
 	 */
-	public function __construct($id = null, $timeout = 60, $shell = null, $wait = null) {
+	public function __construct($id = null, $timeout = 60, $shell = null, $wait = null, $concat_char = null) {
 
 		// Windows default usually c:\windows\System32\cmd.exe from ComSpec and /bin/bash from SHELL on *nix
 		if ($shell === null) {
@@ -42,6 +45,16 @@ class VirtualCLI {
 				$wait = "bash";
 			}
 		}
+
+		// Allow customization of the command concatenation character
+		if ($concat_char === null) {
+			if (VCLIManager::$platform === 'win32') {
+				$concat_char = "&";
+			}else{
+				$concat_char = ";";
+			}
+		}
+		$this->concat_char = $concat_char;
 
 		// Create new instance and unique id if none supplied
 		if ($id === null) {
@@ -89,7 +102,7 @@ class VirtualCLI {
 		if ($eol === null && $wait === null) {
 
 			// Default to adding a sequential command that won't continue until '***done***'.
-			$command .= ";echo ***done***";
+			$command .= $this->concat_char . "echo ***done***";
 			$wait = '***done***';
 		}
 		if ($eol === null) {
@@ -147,14 +160,12 @@ class VirtualCLI {
 
 			// Hide done waiting mechanism
 			if (false !== strpos($line, "***done***")) {
-				$line = str_replace(";echo ***done***", "", $line);
+				$line = str_replace($this->concat_char . "echo ***done***", "", $line);
 				$line = str_replace("***done***", "", $line);
 			}
 			$prev = $line;
 			$results .= $line . Chr(10);
 		}
-		//var_dump($lines);
-		//var_dump($results);
 		return $results;
 	}
 
