@@ -145,7 +145,7 @@ class VCLIManager {
 		$args = array(
 			'action'        =>  'ids'
 		);
-		$results = VCLIManager::send($args);
+		$results = new String(VCLIManager::send($args));
 		return explode("\r\n", $results->delRightMost("\r\n")->__toString());
 	}
 
