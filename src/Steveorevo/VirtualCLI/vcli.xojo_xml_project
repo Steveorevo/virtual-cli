@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>0</SubVersion>
  <Release>0</Release>
- <NonRelease>37</NonRelease>
+ <NonRelease>45</NonRelease>
  <Region></Region>
  <ShortVersion>0.0.1</ShortVersion>
  <LongVersion>0.0.1</LongVersion>
@@ -95,7 +95,6 @@
    <SourceLine>// Process commands</SourceLine>
    <SourceLine>For Each myVShell As VShell In App.Shells.Values</SourceLine>
    <SourceLine>If myVShell.State = VShell.RUNNING Then</SourceLine>
-   <SourceLineBreakpoint>3</SourceLineBreakpoint>
    <SourceLine>If myVShell.Commands.Ubound &gt; -1 Then</SourceLine>
    <SourceLine>myVShell.LastCommand = myVShell.Commands(0)</SourceLine>
    <SourceLine>myVShell.Commands.Remove(0)</SourceLine>
@@ -112,7 +111,7 @@
    <SourceLine></SourceLine>
    <SourceLine>// Add command to top of results</SourceLine>
    <SourceLine>Dim nCommandIndex As Integer = myVShell.LastCommand.GetLeftMost("|").Val()</SourceLine>
-   <SourceLine>myVShell.Results(nCommandIndex) = myVShell.Results(nCommandIndex) + myVShell.LastCommand</SourceLine>
+   <SourceLine>myVShell.Results(nCommandIndex) = myVShell.Results(nCommandIndex) + myVShell.LastCommand.DelLeftMost("|")</SourceLine>
    <SourceLine>myVShell.LastResult = ""</SourceLine>
    <SourceLine>myVShell.State = VShell.PENDING</SourceLine>
    <SourceLine>Else</SourceLine>
@@ -2128,7 +2127,6 @@
    <SourceLine></SourceLine>
    <SourceLine>// Process the given action</SourceLine>
    <SourceLine>Dim myVShell As VShell</SourceLine>
-   <SourceLineBreakpoint>25</SourceLineBreakpoint>
    <SourceLine>Select Case jsArgs.Lookup("action", "")</SourceLine>
    <SourceLine>Case "add"</SourceLine>
    <SourceLine>// Add a command to the queue</SourceLine>
@@ -2188,7 +2186,6 @@
    <SourceLine>App.myHTTPServer.StopListening</SourceLine>
    <SourceLine>App.ExitVCLI = true</SourceLine>
    <SourceLine>App.Shells.Clear</SourceLine>
-   <SourceLine>Quit</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "close"</SourceLine>
    <SourceLine>// Close the given shell console</SourceLine>
@@ -2231,10 +2228,12 @@
    <SourceLine>For Each ids As String In App.Shells.Keys</SourceLine>
    <SourceLine>Response.Write(CStr(ids) + App.EOL)</SourceLine>
    <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>Case Else</SourceLine>
    <SourceLine>Print "Missing action definition in JSON Object" + App.EOL</SourceLine>
    <SourceLine>Response.Status = App.myHTTPServer.StatusServerError</SourceLine>
    <SourceLine>Exit Sub</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>End Select</SourceLine>
    <SourceLine>Response.Status = App.myHTTPServer.StatusOK</SourceLine>
    <SourceLine></SourceLine>
