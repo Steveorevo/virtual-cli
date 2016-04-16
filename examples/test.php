@@ -28,10 +28,10 @@ $myVCLI->add_command("dir", null, function ($results) use ($myVCLI) {
 //	sleep(1);
 //}
 
-//var_dump(VCLIManager::cli_list());
-//var_dump(VCLIManager::has_cli('001'));
-//var_dump(VCLIManager::has_cli('myuniqueid-000'));
-//$oldCLI = new VirtualCLI("5711b496e9a9a2292");
-//$oldCLI->close();
-//var_dump(VCLIManager::cli_list());
-//VCLIManager::shutdown();
+var_dump(VCLIManager::cli_list());
+var_dump(VCLIManager::has_cli('001'));
+var_dump(VCLIManager::has_cli('myuniqueid-000'));
+$oldCLI = new VirtualCLI("5711d6ff208b31871");
+$oldCLI->close();
+var_dump(VCLIManager::cli_list());
+VCLIManager::shutdown();
