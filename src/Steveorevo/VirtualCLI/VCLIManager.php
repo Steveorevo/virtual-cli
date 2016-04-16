@@ -50,7 +50,7 @@ class VCLIManager {
 		if (VCLIManager::$platform === 'win32') {
 			exec("tasklist.exe", $ps);
 			foreach($ps as $p) {
-				if (false !== strpos($p, "vcli.exe --port")) {
+				if (false !== strpos($p, "vcli.exe")) {
 					$p = new String($p);
 					$process_id = intval($p->delLeftMost("vcli.exe")->trim()->getLeftMost(" ")->__toString());
 					break;
@@ -105,7 +105,12 @@ class VCLIManager {
 		$json = json_encode($args);
 		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key;
 		$url .= '&o=' . rawurlencode($json);
-		return @file_get_contents($url);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		curl_close($ch);
+		return $result;
 	}
 
 	/**
