@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>0</SubVersion>
  <Release>0</Release>
- <NonRelease>29</NonRelease>
+ <NonRelease>37</NonRelease>
  <Region></Region>
  <ShortVersion>0.0.1</ShortVersion>
  <LongVersion>0.0.1</LongVersion>
@@ -86,26 +86,6 @@
   </ItemSource>
  </HookInstance>
  <Method>
-  <ItemName>trace</ItemName>
-  <Compatibility></Compatibility>
-  <Visible>1</Visible>
-  <ItemSource>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub trace(message As String)</SourceLine>
-   <SourceLine>Dim http As New HTTPSocket</SourceLine>
-   <SourceLine>Call http.Get("http://localhost:8189/trace?m=" + EncodeURLComponent(message), 5)</SourceLine>
-   <SourceLine>http = Nil</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>End Sub</SourceLine>
-  </ItemSource>
-  <TextEncoding>134217984</TextEncoding>
-  <AliasName></AliasName>
-  <ItemFlags>0</ItemFlags>
-  <IsShared>0</IsShared>
-  <ItemParams>message As String</ItemParams>
-  <ItemResult></ItemResult>
- </Method>
- <Method>
   <ItemName>Process</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
@@ -115,6 +95,7 @@
    <SourceLine>// Process commands</SourceLine>
    <SourceLine>For Each myVShell As VShell In App.Shells.Values</SourceLine>
    <SourceLine>If myVShell.State = VShell.RUNNING Then</SourceLine>
+   <SourceLineBreakpoint>3</SourceLineBreakpoint>
    <SourceLine>If myVShell.Commands.Ubound &gt; -1 Then</SourceLine>
    <SourceLine>myVShell.LastCommand = myVShell.Commands(0)</SourceLine>
    <SourceLine>myVShell.Commands.Remove(0)</SourceLine>
@@ -124,32 +105,28 @@
    <SourceLine>// Execute the command</SourceLine>
    <SourceLine>myVShell.TimeUp = myVShell.MaxTimeout</SourceLine>
    <SourceLine>If myVShell.IsRunning = False Then</SourceLine>
-   <SourceLine>myVShell.Execute(myVShell.LastCommand)</SourceLine>
+   <SourceLine>myVShell.Execute(myVShell.LastCommand.DelLeftMost("|"))</SourceLine>
    <SourceLine>Else</SourceLine>
-   <SourceLine>myVShell.Write(myVShell.LastCommand)</SourceLine>
+   <SourceLine>myVShell.Write(myVShell.LastCommand.DelLeftMost("|"))</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>// Hide passwords in response to prompts</SourceLine>
-   <SourceLine>If myVShell.LastResult.Lowercase.Left(8) = "password" Then</SourceLine>
-   <SourceLine>myVShell.Results(myVShell.CommandIndex) = myVShell.Results(myVShell.CommandIndex) + "********" + App.EOL</SourceLine>
-   <SourceLine>myVShell.LastCommand =  "********"</SourceLine>
-   <SourceLine>Else</SourceLine>
-   <SourceLine>myVShell.LastCommand = myVShell.LastCommand.ReplaceAll(";echo ***done***", "")</SourceLine>
-   <SourceLine>myVShell.Results(myVShell.CommandIndex) = myVShell.Results(myVShell.CommandIndex) + myVShell.LastCommand + App.EOL</SourceLine>
-   <SourceLine>End If</SourceLine>
+   <SourceLine>// Add command to top of results</SourceLine>
+   <SourceLine>Dim nCommandIndex As Integer = myVShell.LastCommand.GetLeftMost("|").Val()</SourceLine>
+   <SourceLine>myVShell.Results(nCommandIndex) = myVShell.Results(nCommandIndex) + myVShell.LastCommand</SourceLine>
    <SourceLine>myVShell.LastResult = ""</SourceLine>
    <SourceLine>myVShell.State = VShell.PENDING</SourceLine>
    <SourceLine>Else</SourceLine>
+   <SourceLine>Dim nCommandIndex As Integer = myVShell.LastCommand.GetLeftMost("|").Val()</SourceLine>
    <SourceLine>myVShell.State = VShell.DONE</SourceLine>
-   <SourceLine>myVShell.Results(myVShell.CommandIndex) = myVShell.Results(myVShell.CommandIndex).ReplaceAll("***done***", "")</SourceLine>
-   <SourceLine>myVShell.IsDone = myVShell.IsDone + CStr(myVShell.CommandIndex) + ","</SourceLine>
+   <SourceLine>myVShell.IsDone = myVShell.IsDone + CStr(nCommandIndex) + ","</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Gather results from CLI</SourceLine>
+   <SourceLine>Dim nCommandIndex As Integer = myVShell.LastCommand.GetLeftMost("|").Val()</SourceLine>
    <SourceLine>myVShell.LastResult = myVShell.ReadAll</SourceLine>
    <SourceLine>If myVShell.LastResult &lt;&gt; "" Then</SourceLine>
-   <SourceLine>myVShell.Results(myVShell.CommandIndex) = myVShell.Results(myVShell.CommandIndex) + myVShell.LastResult</SourceLine>
+   <SourceLine>myVShell.Results(nCommandIndex) = myVShell.Results(nCommandIndex) + myVShell.LastResult</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Check for expected completion, wait, or timeout.</SourceLine>
@@ -183,6 +160,9 @@
    <SourceLine>End If</SourceLine>
    <SourceLine>Next</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>Exit Sub</SourceLine>
+   <SourceLine>Exception err as RuntimeException</SourceLine>
+   <SourceLine>Print "Runtime exception in App.Process" + App.EOL</SourceLine>
    <SourceLine>End Sub</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -254,7 +234,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>SecurityKey As String = "HelloVCLI123"</SourceLine>
+   <SourceLine>SecurityKey As String</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -315,11 +295,7 @@
    <ObjName>EOL</ObjName>
    <PropertyGroup>Behavior</PropertyGroup>
    <ItemType>String</ItemType>
-  </ViewProperty>
-  <ViewProperty>
-   <ObjName>addCount</ObjName>
-   <PropertyGroup>Behavior</PropertyGroup>
-   <ItemType>Integer</ItemType>
+   <EditorType>MultiLineEditor</EditorType>
   </ViewProperty>
  </ViewBehavior>
 </block>
@@ -2127,31 +2103,42 @@
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
    <SourceLine>Sub HandleRequest(ByRef Request As cRequest, ByRef Response As cResponse, ByRef HTTPServer As cHTTPServer)</SourceLine>
-   <SourceLine>Dim c As String = Request.Query("c") // Command</SourceLine>
-   <SourceLine>Dim id As String = Request.Query("id") // Console ID</SourceLine>
-   <SourceLine>Dim s As String = Request.Query("s") // Security key</SourceLine>
-   <SourceLine>Dim w As String = Request.Query("w") // Wait for</SourceLine>
-   <SourceLine>Dim a As String = Request.Query("a") // Action</SourceLine>
-   <SourceLine>Dim myVShell As VShell</SourceLine>
-   <SourceLine></SourceLine>
    <SourceLine>// Test security key</SourceLine>
+   <SourceLine>Dim s As String = Request.Query("s")</SourceLine>
    <SourceLine>If s &lt;&gt; App.SecurityKey Then</SourceLine>
+   <SourceLine>Print "Security key failed to authenticate" + App.EOL</SourceLine>
    <SourceLine>Response.Status = App.myHTTPServer.StatusServerError</SourceLine>
    <SourceLine>Exit Sub</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>// Parse arguments</SourceLine>
+   <SourceLine>Dim jsArgs As JSONItem</SourceLine>
+   <SourceLine>Try</SourceLine>
+   <SourceLine>jsArgs = New JSONItem(Request.Query("o"))</SourceLine>
+   <SourceLine>Catch e As JSONException</SourceLine>
+   <SourceLine>Print "Missing GET parameter for JSON Object" + App.EOL</SourceLine>
+   <SourceLine>Response.Status = App.myHTTPServer.StatusServerError</SourceLine>
+   <SourceLine>Exit Sub</SourceLine>
+   <SourceLine>End Try</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim id As String = jsArgs.Lookup("console_id", "") // Console ID</SourceLine>
+   <SourceLine>Dim c As String = jsArgs.Lookup("command", "") // Command</SourceLine>
+   <SourceLine>Dim w As String = jsArgs.Lookup("wait_for", "") // Wait for</SourceLine>
+   <SourceLine>Dim a As String = jsArgs.Lookup("action", "") // Action</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>// Process the given action</SourceLine>
-   <SourceLine>Select Case a</SourceLine>
+   <SourceLine>Dim myVShell As VShell</SourceLine>
+   <SourceLineBreakpoint>25</SourceLineBreakpoint>
+   <SourceLine>Select Case jsArgs.Lookup("action", "")</SourceLine>
    <SourceLine>Case "add"</SourceLine>
    <SourceLine>// Add a command to the queue</SourceLine>
-   <SourceLine>myVShell = App.Shells.Value(id)</SourceLine>
-   <SourceLine>myVShell.Commands.Append(c)</SourceLine>
-   <SourceLine>myVShell.Waits.Append(w)</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
+   <SourceLine>myVShell.Commands.Append(CStr(myVShell.CommandCount) + "|" + jsArgs.Lookup("command", ""))</SourceLine>
+   <SourceLine>myVShell.Waits.Append(jsArgs.Lookup("wait_for", ""))</SourceLine>
    <SourceLine>myVShell.Results.Append("")</SourceLine>
-   <SourceLine>If myVShell.State = VShell.DONE Then myVShell.State = VShell.RUNNING</SourceLine>
-   <SourceLine>myVShell.CommandIndex = myVShell.CommandCount</SourceLine>
-   <SourceLine>Response.Write(CStr(myVShell.CommandIndex))</SourceLine>
+   <SourceLine>Response.Write(CStr(myVShell.CommandCount))</SourceLine>
    <SourceLine>myVShell.CommandCount = myVShell.CommandCount + 1</SourceLine>
+   <SourceLine>If myVShell.State = VShell.DONE Then myVShell.State = VShell.RUNNING</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "create"</SourceLine>
    <SourceLine>// Create a new instance of a CLI</SourceLine>
@@ -2159,22 +2146,21 @@
    <SourceLine>myVShell.DOB = New Date</SourceLine>
    <SourceLine>myVShell.Timeout = -1</SourceLine>
    <SourceLine>myVShell.Mode = 2</SourceLine>
-   <SourceLine>myVShell.State = VShell.RUNNING</SourceLine>
    <SourceLine>If w &lt;&gt; "" Then</SourceLine>
-   <SourceLine>myVShell.MaxTimeout = Val(w)</SourceLine>
-   <SourceLine>myVShell.TimeUp = Val(w)</SourceLine>
+   <SourceLine>myVShell.MaxTimeout = Val(jsArgs.Lookup("timeout", ""))</SourceLine>
+   <SourceLine>myVShell.TimeUp = Val(jsArgs.Lookup("timeout", ""))</SourceLine>
    <SourceLine>End If</SourceLine>
-   <SourceLine>myVShell.Commands.Append(c)</SourceLine>
-   <SourceLine>myVShell.Waits.Append(0)</SourceLine>
+   <SourceLine>myVShell.Commands.Append(CStr(myVShell.CommandCount) + "|" + jsArgs.Lookup("command", ""))</SourceLine>
+   <SourceLine>myVShell.CommandCount = myVShell.CommandCount + 1</SourceLine>
+   <SourceLine>myVShell.Waits.Append(jsArgs.Lookup("wait_for", ""))</SourceLine>
    <SourceLine>myVShell.Results.Append("")</SourceLine>
-   <SourceLine>myVShell.CommandIndex = 0</SourceLine>
-   <SourceLine>myVShell.CommandCount = 1</SourceLine>
    <SourceLine>App.Shells.Value(id) = myVShell</SourceLine>
+   <SourceLine>myVShell.State = VShell.RUNNING</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "result"</SourceLine>
    <SourceLine>// Return the last result for a given command id or everything</SourceLine>
-   <SourceLine>myVShell = App.Shells.Value(id)</SourceLine>
-   <SourceLine>Dim ci As Integer = Val(w)</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
+   <SourceLine>Dim ci As Integer = Val(jsArgs.Lookup("wait_for", ""))</SourceLine>
    <SourceLine>If ci &gt; -1 And ci &lt; myVShell.CommandCount Then</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Return a result from a given command</SourceLine>
@@ -2206,22 +2192,23 @@
    <SourceLine></SourceLine>
    <SourceLine>Case "close"</SourceLine>
    <SourceLine>// Close the given shell console</SourceLine>
-   <SourceLine>myVShell = App.Shells.Value(id)</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
    <SourceLine>myVShell.Write(Chr(3) + Chr(3)) // double ctrl+c</SourceLine>
    <SourceLine>myVShell.Write("exit" + App.EOL)</SourceLine>
    <SourceLine>myVShell.Close</SourceLine>
    <SourceLine>myVShell = Nil</SourceLine>
-   <SourceLine>App.Shells.Remove(id)</SourceLine>
+   <SourceLine>App.Shells.Remove(jsArgs.Lookup("console_id", ""))</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "age"</SourceLine>
    <SourceLine>// Return the age in seconds</SourceLine>
    <SourceLine>Dim d As New Date</SourceLine>
-   <SourceLine>myVShell = App.Shells.Value(id)</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
    <SourceLine>Response.Write(CStr(d.TotalSeconds - myVShell.DOB.TotalSeconds))</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "is_done"</SourceLine>
    <SourceLine>// Return if a given command is done or if everything is finished</SourceLine>
-   <SourceLine>myVShell = App.Shells.Value(id)</SourceLine>
+   <SourceLine>If App.Shells.HasKey(jsArgs.Lookup("console_id", "")) Then</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
    <SourceLine>If w = "-1" Then</SourceLine>
    <SourceLine>If myVShell.State = VShell.DONE And myVShell.Commands.Ubound = -1 Then</SourceLine>
    <SourceLine>Response.Write("1")</SourceLine>
@@ -2229,11 +2216,14 @@
    <SourceLine>Response.Write("0")</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine>Else</SourceLine>
-   <SourceLine>If myVShell.IsDone.InStr(","+w+",") &gt; 0 Then</SourceLine>
+   <SourceLine>If myVShell.IsDone.InStr("," + jsArgs.Lookup("wait_for", "") + ",") &gt; 0 Then</SourceLine>
    <SourceLine>Response.Write("1")</SourceLine>
    <SourceLine>Else</SourceLine>
    <SourceLine>Response.Write("0")</SourceLine>
    <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>Response.Write("0")</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "ids"</SourceLine>
@@ -2241,8 +2231,19 @@
    <SourceLine>For Each ids As String In App.Shells.Keys</SourceLine>
    <SourceLine>Response.Write(CStr(ids) + App.EOL)</SourceLine>
    <SourceLine>Next</SourceLine>
+   <SourceLine>Case Else</SourceLine>
+   <SourceLine>Print "Missing action definition in JSON Object" + App.EOL</SourceLine>
+   <SourceLine>Response.Status = App.myHTTPServer.StatusServerError</SourceLine>
+   <SourceLine>Exit Sub</SourceLine>
    <SourceLine>End Select</SourceLine>
    <SourceLine>Response.Status = App.myHTTPServer.StatusOK</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Exit Sub</SourceLine>
+   <SourceLine>Exception err as RuntimeException</SourceLine>
+   <SourceLine>Print "Runtime exception in HandleRequest" + App.EOL</SourceLine>
+   <SourceLine>Response.Status = App.myHTTPServer.StatusServerError</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine></SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End Sub</SourceLine>
@@ -2361,7 +2362,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>MaxTimeout As Integer = 60</SourceLine>
+   <SourceLine>MaxTimeout As Integer</SourceLine>
    <SourceLine>Integer that represents the total number of seconds before a timeout will occur and the next command is processed. </SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -2440,30 +2441,16 @@
   <IsShared>0</IsShared>
  </Property>
  <Property>
-  <ItemName>CommandIndex</ItemName>
-  <Compatibility></Compatibility>
-  <Visible>1</Visible>
-  <ItemSource>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>CommandIndex As Integer</SourceLine>
-   <SourceLine></SourceLine>
-  </ItemSource>
-  <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>CommandIndex As Integer</ItemDeclaration>
-  <ItemFlags>0</ItemFlags>
-  <IsShared>0</IsShared>
- </Property>
- <Property>
   <ItemName>CommandCount</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>CommandCount As Integer</SourceLine>
+   <SourceLine>CommandCount As Integer = 0</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>CommandCount As Integer</ItemDeclaration>
+  <ItemDeclaration>CommandCount As Integer = 0</ItemDeclaration>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
@@ -2487,7 +2474,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>IsDone As String = ","</SourceLine>
+   <SourceLine>IsDone As String</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -2557,15 +2544,10 @@
    <EditorType>Boolean</EditorType>
   </ViewProperty>
   <ViewProperty>
-   <ObjName>History</ObjName>
-   <PropertyGroup>Behavior</PropertyGroup>
-   <ItemType>String</ItemType>
-   <EditorType>MultiLineEditor</EditorType>
-  </ViewProperty>
-  <ViewProperty>
    <ObjName>LastResult</ObjName>
    <PropertyGroup>Behavior</PropertyGroup>
    <ItemType>String</ItemType>
+   <EditorType>MultiLineEditor</EditorType>
   </ViewProperty>
   <ViewProperty>
    <ObjName>TimeUp</ObjName>
@@ -2586,9 +2568,33 @@
    <ItemType>Integer</ItemType>
   </ViewProperty>
   <ViewProperty>
-   <ObjName>LastCommandID</ObjName>
+   <ObjName>MaxTimeout</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>60</PropertyValue>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>CommandIndex</ObjName>
    <PropertyGroup>Behavior</PropertyGroup>
    <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>CommandCount</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>LastCommand</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <ItemType>String</ItemType>
+   <EditorType>MultiLineEditor</EditorType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>IsDone</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>,</PropertyValue>
+   <ItemType>String</ItemType>
+   <EditorType>MultiLineEditor</EditorType>
   </ViewProperty>
  </ViewBehavior>
  <Constant>
@@ -2628,9 +2634,9 @@
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation>App.Process</EditorLocation>
+    <EditorLocation>VCLI.HandleRequest</EditorLocation>
     <EditorPath></EditorPath>
-    <EditingPartID>712812485</EditingPartID>
+    <EditingPartID>1995174002</EditingPartID>
    </Editor>
    <SelectedTab>0</SelectedTab>
   </Editors>
