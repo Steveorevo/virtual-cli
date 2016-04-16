@@ -43,22 +43,36 @@ class VirtualCLI {
 			}
 		}
 
-		// Create unique id if none supplied
+		// Create new instance and unique id if none supplied
 		if ($id === null) {
-			$id = uniqid() . dechex(rand(0, 32000));
+			$id = uniqid() . dechex( rand( 0, 32000 ) );
+
+			// Immediately create the native shell instance
+			$args = array(
+				'console_id'    =>  $id,
+				'timeout'       =>  $timeout,
+				'wait_for'      =>  $wait,
+				'action'        =>  'create',
+				'command'       =>  $shell
+			);
+			VCLIManager::send($args);
+
+		// Check for existing instance by name and create it if nec
+		}else{
+			if (! VCLIManager::has_cli($id)) {
+				$args = array(
+					'console_id'    =>  $id,
+					'timeout'       =>  $timeout,
+					'wait_for'      =>  $wait,
+					'action'        =>  'create',
+					'command'       =>  $shell
+				);
+				VCLIManager::send($args);
+			}
 		}
 		$this->id = $id;
-
-		// Create the native shell instance
-		$args = array(
-			'console_id'    =>  $this->id,
-			'timeout'       =>  $timeout,
-			'wait_for'      =>  $wait,
-			'action'        =>  'create',
-			'command'       =>  $shell
-		);
-		VCLIManager::send($args);
 	}
+
 
 	/**
 	 * Add a command to be processed by the virtual command line interface.
@@ -156,6 +170,17 @@ class VirtualCLI {
 			'wait_for'      =>  $command_id,
 			'console_id'    =>  $this->id,
 			'action'        =>  'is_done'
+		);
+		return VCLIManager::send($args);
+	}
+
+	/**
+	 * Close the given virtual commandline interface.
+	 */
+	public function close() {
+		$args = array(
+			'console_id'    =>  $this->id,
+			'action'        =>  'close'
 		);
 		return VCLIManager::send($args);
 	}
