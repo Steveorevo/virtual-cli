@@ -142,16 +142,20 @@ class VCLIManager {
 	 * @return array An array containing a list of current sessions.
 	 */
 	static function cli_list() {
-		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key . '&a=ids';
-		$r = new String(file_get_contents($url));
-		return explode("\r\n", $r->delRightMost("\r\n")->__toString());
+		$args = array(
+			'action'        =>  'ids'
+		);
+		$results = VCLIManager::send($args);
+		return explode("\r\n", $results->delRightMost("\r\n")->__toString());
 	}
 
 	/**
 	 * Shutdown and quit all VirtualCLI objects and removes the vcli native binary from memory.
 	 */
 	static function shutdown() {
-		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key . '&a=quit';
-		@file_get_contents($url);
+		$args = array(
+			'action'        =>  'quit'
+		);
+		VCLIManager::send($args);
 	}
 }
