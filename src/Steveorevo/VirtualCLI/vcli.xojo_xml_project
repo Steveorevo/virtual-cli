@@ -2229,6 +2229,16 @@
    <SourceLine>Response.Write(sHistory)</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>Case "start"</SourceLine>
+   <SourceLine>// Start the processing queue for the given thread</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
+   <SourceLine>myVShell.Paused = False</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "stop"</SourceLine>
+   <SourceLine>// Stop the processing queue for the given thread</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
+   <SourceLine>myVShell.Paused = True</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>Case Else</SourceLine>
    <SourceLine>Print "Missing action definition in JSON Object" + App.EOL</SourceLine>
    <SourceLine>Response.Status = App.myHTTPServer.StatusServerError</SourceLine>
