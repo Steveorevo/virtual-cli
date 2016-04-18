@@ -2138,11 +2138,6 @@
    <SourceLine>Exit Sub</SourceLine>
    <SourceLine>End Try</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>Dim id As String = jsArgs.Lookup("console_id", "") // Console ID</SourceLine>
-   <SourceLine>Dim c As String = jsArgs.Lookup("command", "") // Command</SourceLine>
-   <SourceLine>Dim w As String = jsArgs.Lookup("wait_for", "") // Wait for</SourceLine>
-   <SourceLine>Dim a As String = jsArgs.Lookup("action", "") // Action</SourceLine>
-   <SourceLine></SourceLine>
    <SourceLine>// Process the given action</SourceLine>
    <SourceLine>Dim myVShell As VShell</SourceLine>
    <SourceLine>Select Case jsArgs.Lookup("action", "")</SourceLine>
