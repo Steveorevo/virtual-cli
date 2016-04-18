@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>29072</BuildFlags>
+ <BuildFlags>20880</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -94,7 +94,7 @@
    <SourceLine>Sub Process()</SourceLine>
    <SourceLine>// Process commands</SourceLine>
    <SourceLine>For Each myVShell As VShell In App.Shells.Values</SourceLine>
-   <SourceLine>If myVShell.State = VShell.RUNNING Then</SourceLine>
+   <SourceLine>If myVShell.State = VShell.RUNNING And myVShell.Paused = False Then</SourceLine>
    <SourceLine>If myVShell.Commands.Ubound &gt; -1 Then</SourceLine>
    <SourceLine>myVShell.LastCommand = myVShell.Commands(0)</SourceLine>
    <SourceLine>myVShell.Commands.Remove(0)</SourceLine>
@@ -2138,6 +2138,21 @@
    <SourceLine>myVShell.CommandCount = myVShell.CommandCount + 1</SourceLine>
    <SourceLine>If myVShell.State = VShell.DONE Then myVShell.State = VShell.RUNNING</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>Case "age"</SourceLine>
+   <SourceLine>// Return the age in seconds</SourceLine>
+   <SourceLine>Dim d As New Date</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
+   <SourceLine>Response.Write(CStr(d.TotalSeconds - myVShell.DOB.TotalSeconds))</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "close"</SourceLine>
+   <SourceLine>// Close the given shell console</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
+   <SourceLine>myVShell.Write(Chr(3) + Chr(3)) // double ctrl+c</SourceLine>
+   <SourceLine>myVShell.Write("exit" + App.EOL)</SourceLine>
+   <SourceLine>myVShell.Close</SourceLine>
+   <SourceLine>myVShell = Nil</SourceLine>
+   <SourceLine>App.Shells.Remove(jsArgs.Lookup("console_id", ""))</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>Case "create"</SourceLine>
    <SourceLine>// Create a new instance of a CLI</SourceLine>
    <SourceLine>myVShell = New VShell</SourceLine>
@@ -2155,52 +2170,11 @@
    <SourceLine>App.Shells.Value(id) = myVShell</SourceLine>
    <SourceLine>myVShell.State = VShell.RUNNING</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>Case "result"</SourceLine>
-   <SourceLine>// Return the last result for a given command id or everything</SourceLine>
-   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
-   <SourceLine>Dim ci As Integer = Val(jsArgs.Lookup("wait_for", ""))</SourceLine>
-   <SourceLine>If ci &gt; -1 And ci &lt; myVShell.CommandCount Then</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>// Return a result from a given command</SourceLine>
-   <SourceLine>Response.Write(myVShell.Results(ci))</SourceLine>
-   <SourceLine>Else</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>// Return everything</SourceLine>
-   <SourceLine>Dim sHistory As String</SourceLine>
-   <SourceLine>For Each r As String in myVShell.Results</SourceLine>
-   <SourceLine>sHistory = sHistory + r</SourceLine>
-   <SourceLine>Next</SourceLine>
-   <SourceLine>Response.Write(sHistory)</SourceLine>
-   <SourceLine>End If</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>Case "quit"</SourceLine>
-   <SourceLine>// Close all active shell consoles</SourceLine>
-   <SourceLine>Dim aVShell As VShell</SourceLine>
+   <SourceLine>Case "ids"</SourceLine>
+   <SourceLine>// Return all shell ids</SourceLine>
    <SourceLine>For Each ids As String In App.Shells.Keys</SourceLine>
-   <SourceLine>aVShell = App.Shells.Value(ids)</SourceLine>
-   <SourceLine>aVShell.Write(Chr(3) + Chr(3)) // double ctrl+c</SourceLine>
-   <SourceLine>aVShell.Write("exit" + App.EOL)</SourceLine>
-   <SourceLine>aVShell.Close</SourceLine>
+   <SourceLine>Response.Write(CStr(ids) + App.EOL)</SourceLine>
    <SourceLine>Next</SourceLine>
-   <SourceLine>Response.Status = App.myHTTPServer.StatusOK</SourceLine>
-   <SourceLine>App.myHTTPServer.StopListening</SourceLine>
-   <SourceLine>App.ExitVCLI = true</SourceLine>
-   <SourceLine>App.Shells.Clear</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>Case "close"</SourceLine>
-   <SourceLine>// Close the given shell console</SourceLine>
-   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
-   <SourceLine>myVShell.Write(Chr(3) + Chr(3)) // double ctrl+c</SourceLine>
-   <SourceLine>myVShell.Write("exit" + App.EOL)</SourceLine>
-   <SourceLine>myVShell.Close</SourceLine>
-   <SourceLine>myVShell = Nil</SourceLine>
-   <SourceLine>App.Shells.Remove(jsArgs.Lookup("console_id", ""))</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>Case "age"</SourceLine>
-   <SourceLine>// Return the age in seconds</SourceLine>
-   <SourceLine>Dim d As New Date</SourceLine>
-   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
-   <SourceLine>Response.Write(CStr(d.TotalSeconds - myVShell.DOB.TotalSeconds))</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "is_done"</SourceLine>
    <SourceLine>// Return if a given command is done or if everything is finished</SourceLine>
@@ -2223,11 +2197,37 @@
    <SourceLine>Response.Write("0")</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>Case "ids"</SourceLine>
-   <SourceLine>// Return all shell ids</SourceLine>
+   <SourceLine>Case "quit"</SourceLine>
+   <SourceLine>// Close all active shell consoles</SourceLine>
+   <SourceLine>Dim aVShell As VShell</SourceLine>
    <SourceLine>For Each ids As String In App.Shells.Keys</SourceLine>
-   <SourceLine>Response.Write(CStr(ids) + App.EOL)</SourceLine>
+   <SourceLine>aVShell = App.Shells.Value(ids)</SourceLine>
+   <SourceLine>aVShell.Write(Chr(3) + Chr(3)) // double ctrl+c</SourceLine>
+   <SourceLine>aVShell.Write("exit" + App.EOL)</SourceLine>
+   <SourceLine>aVShell.Close</SourceLine>
    <SourceLine>Next</SourceLine>
+   <SourceLine>Response.Status = App.myHTTPServer.StatusOK</SourceLine>
+   <SourceLine>App.myHTTPServer.StopListening</SourceLine>
+   <SourceLine>App.ExitVCLI = true</SourceLine>
+   <SourceLine>App.Shells.Clear</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "result"</SourceLine>
+   <SourceLine>// Return the last result for a given command id or everything</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
+   <SourceLine>Dim ci As Integer = Val(jsArgs.Lookup("wait_for", ""))</SourceLine>
+   <SourceLine>If ci &gt; -1 And ci &lt; myVShell.CommandCount Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Return a result from a given command</SourceLine>
+   <SourceLine>Response.Write(myVShell.Results(ci))</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Return everything</SourceLine>
+   <SourceLine>Dim sHistory As String</SourceLine>
+   <SourceLine>For Each r As String in myVShell.Results</SourceLine>
+   <SourceLine>sHistory = sHistory + r</SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine>Response.Write(sHistory)</SourceLine>
+   <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case Else</SourceLine>
    <SourceLine>Print "Missing action definition in JSON Object" + App.EOL</SourceLine>
@@ -2389,11 +2389,11 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Paused As Boolean</SourceLine>
+   <SourceLine>Paused As Boolean = True</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>Paused As Boolean = False</ItemDeclaration>
+  <ItemDeclaration>Paused As Boolean = True</ItemDeclaration>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
@@ -2445,7 +2445,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>CommandCount As Integer = 0</SourceLine>
+   <SourceLine>CommandCount As Integer</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -2573,13 +2573,9 @@
    <ItemType>Integer</ItemType>
   </ViewProperty>
   <ViewProperty>
-   <ObjName>CommandIndex</ObjName>
-   <PropertyGroup>Behavior</PropertyGroup>
-   <ItemType>Integer</ItemType>
-  </ViewProperty>
-  <ViewProperty>
    <ObjName>CommandCount</ObjName>
    <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>0</PropertyValue>
    <ItemType>Integer</ItemType>
   </ViewProperty>
   <ViewProperty>
