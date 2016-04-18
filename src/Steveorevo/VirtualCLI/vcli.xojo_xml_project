@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>0</SubVersion>
  <Release>0</Release>
- <NonRelease>45</NonRelease>
+ <NonRelease>49</NonRelease>
  <Region></Region>
  <ShortVersion>0.0.1</ShortVersion>
  <LongVersion>0.0.1</LongVersion>
@@ -95,6 +95,7 @@
    <SourceLine>// Process commands</SourceLine>
    <SourceLine>For Each myVShell As VShell In App.Shells.Values</SourceLine>
    <SourceLine>If myVShell.State = VShell.RUNNING And myVShell.Paused = False Then</SourceLine>
+   <SourceLine>If App.Mutexes.HasKey(myVShell.WaitMutex) = False Then</SourceLine>
    <SourceLine>If myVShell.Commands.Ubound &gt; -1 Then</SourceLine>
    <SourceLine>myVShell.LastCommand = myVShell.Commands(0)</SourceLine>
    <SourceLine>myVShell.Commands.Remove(0)</SourceLine>
@@ -118,6 +119,7 @@
    <SourceLine>Dim nCommandIndex As Integer = myVShell.LastCommand.GetLeftMost("|").Val()</SourceLine>
    <SourceLine>myVShell.State = VShell.DONE</SourceLine>
    <SourceLine>myVShell.IsDone = myVShell.IsDone + CStr(nCommandIndex) + ","</SourceLine>
+   <SourceLine>End If</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
@@ -148,7 +150,9 @@
    <SourceLine>End If</SourceLine>
    <SourceLine>If myVShell.TimeUp &gt; 0 Then</SourceLine>
    <SourceLine>If lastSecond &lt;&gt; d.Second Then</SourceLine>
+   <SourceLine>If App.Mutexes.HasKey(myVShell.WaitMutex) = False Then</SourceLine>
    <SourceLine>myVShell.TimeUp = myVShell.TimeUp - 1</SourceLine>
+   <SourceLine>End If</SourceLine>
    <SourceLine>lastSecond = d.Second</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine>If myVShell.TimeUp = 0 Then</SourceLine>
@@ -266,6 +270,20 @@
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
   <ItemDeclaration>EOL As String</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
+ <Property>
+  <ItemName>Mutexes</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Mutexes As Dictionary</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>Mutexes As Dictionary</ItemDeclaration>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
@@ -2234,6 +2252,39 @@
    <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
    <SourceLine>myVShell.Paused = False</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>Case "set_mutex"</SourceLine>
+   <SourceLine>// Bump mutex count</SourceLine>
+   <SourceLine>Dim sName As String = jsArgs.Lookup("mutex_name", "")</SourceLine>
+   <SourceLine>Dim nCount As Integer = App.Mutexes.Lookup(sName, 0) </SourceLine>
+   <SourceLine>nCount = nCount + 1</SourceLine>
+   <SourceLine>App.Mutexes.Value(sName) = nCount</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "release_mutex"</SourceLine>
+   <SourceLine>// Reduce mutex count, remove mutex</SourceLine>
+   <SourceLine>Dim sName As String = jsArgs.Lookup("mutex_name", "")</SourceLine>
+   <SourceLine>Dim nCount As Integer = App.Mutexes.Lookup(sName, 0)</SourceLine>
+   <SourceLine>nCount = nCount - 1</SourceLine>
+   <SourceLine>If nCount &lt;= 0 Then </SourceLine>
+   <SourceLine>If App.Mutexes.HasKey(sName) Then</SourceLine>
+   <SourceLine>App.Mutexes.Remove(sName)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Release waiting shells</SourceLine>
+   <SourceLine>For Each theVShell As VShell In App.Shells.Values</SourceLine>
+   <SourceLine>If theVShell.WaitMutex = sName Then</SourceLine>
+   <SourceLine>theVShell.WaitMutex = ""</SourceLine>
+   <SourceLine>End if</SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "wait_mutex"</SourceLine>
+   <SourceLine>// Wait for a given mutex if present</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
+   <SourceLine>Dim sName As String = jsArgs.Lookup("mutex_name", "")</SourceLine>
+   <SourceLine>If App.Mutexes.HasKey(sName) Then</SourceLine>
+   <SourceLine>myVShell.WaitMutex = sName</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>Case "stop"</SourceLine>
    <SourceLine>// Stop the processing queue for the given thread</SourceLine>
    <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
@@ -2488,6 +2539,20 @@
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
   <ItemDeclaration>IsDone As String = ","</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
+ <Property>
+  <ItemName>WaitMutex</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>WaitMutex As String</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>WaitMutex As String</ItemDeclaration>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
