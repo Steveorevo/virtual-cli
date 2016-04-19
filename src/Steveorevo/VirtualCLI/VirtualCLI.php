@@ -86,6 +86,82 @@ class VirtualCLI {
 		$this->id = $id;
 	}
 
+	/**
+	 * Start processing the commands on the virtual command line interface.
+	 */
+	public function start()
+	{
+		// Send the command to the native shell instance
+		$args = array(
+			'console_id'    =>  $this->id,
+			'action'        =>  'start'
+		);
+		VCLIManager::send($args);
+	}
+
+	/**
+	 * Stop processing the commands on the virtual command line interface.
+	 */
+	public function stop()
+	{
+		// Send the command to the native shell instance
+		$args = array(
+			'console_id'    =>  $this->id,
+			'action'        =>  'stop'
+		);
+		VCLIManager::send($args);
+	}
+
+	/**
+	 * Wait for the given mutex to finish before continuing processing of subsequent add_commands.
+	 *
+	 * @param $name The name of the mutex to wait for.
+	 */
+	public function wait_for_mutex($name)
+	{
+		// Schedule the mutex waiting (like adding a command), to be processed as apart of the command queue
+		$args = array(
+			'command'       =>  "## mutex wait " . $name,
+			'console_id'    =>  $this->id,
+			'wait_for'      =>  0,
+			'action'        =>  'add'
+		);
+		VCLIManager::send($args);
+	}
+
+	/**
+	 * Create or increment the given mutex count.
+	 *
+	 * @param $name The name of the mutex to set.
+	 */
+	public function set_mutex($name)
+	{
+		// Schedule the mutex creation (like adding a command(, to be processed as apart of the command queue
+		$args = array(
+			'command'       =>  "## mutex set " . $name,
+			'console_id'    =>  $this->id,
+			'wait_for'      =>  0,
+			'action'        =>  'add'
+		);
+		VCLIManager::send($args);
+	}
+
+	/**
+	 * Release the given mutex.
+	 *
+	 * @param $name The name of the mutex to release.
+	 */
+	public function release_mutex($name)
+	{
+		// Schedule the mutex release (like adding a command), to be processed as apart of the command queue
+		$args = array(
+			'command'       =>  "## mutex release " . $name,
+			'console_id'    =>  $this->id,
+			'wait_for'      =>  0,
+			'action'        =>  'add'
+		);
+		VCLIManager::send($args);
+	}
 
 	/**
 	 * Add a command to be processed by the virtual command line interface.
