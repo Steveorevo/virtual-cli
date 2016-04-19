@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>0</SubVersion>
  <Release>0</Release>
- <NonRelease>65</NonRelease>
+ <NonRelease>67</NonRelease>
  <Region></Region>
  <ShortVersion>0.0.1</ShortVersion>
  <LongVersion>0.0.1</LongVersion>
@@ -140,6 +140,7 @@
    <SourceLine>myVShell.Waits.Remove(0)</SourceLine>
    <SourceLine>If myVShell.IsRunning = False Then</SourceLine>
    <SourceLine>myVShell.Execute(myVShell.LastCommand.DelLeftMost("|"))</SourceLine>
+   <SourceLine>myVShell.LastCommand = myVShell.LastCommand + App.EOL</SourceLine>
    <SourceLine>Else</SourceLine>
    <SourceLine>myVShell.Write(myVShell.LastCommand.DelLeftMost("|"))</SourceLine>
    <SourceLine>End If</SourceLine>
@@ -2224,7 +2225,6 @@
    <SourceLine>Case "is_done"</SourceLine>
    <SourceLine>// Return if a given command is done or if everything is finished</SourceLine>
    <SourceLine>If App.Shells.HasKey(jsArgs.Lookup("console_id", "")) Then</SourceLine>
-   <SourceLineBreakpoint>72</SourceLineBreakpoint>
    <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
    <SourceLine>If jsArgs.Lookup("wait_for", "") = "-1" Then</SourceLine>
    <SourceLine>If myVShell.State = VShell.DONE And myVShell.Commands.Ubound = -1 Then</SourceLine>
