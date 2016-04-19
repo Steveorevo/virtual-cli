@@ -19,7 +19,7 @@ if (VCLIManager::$platform === 'win32') {
 }
 
 // Create a new virtual command line interface running bash with a 5 minute timeout
-$myVCLI = new VirtualCLI("ds-cli-example", 5 * 60, $shell, 0, ";");
+$myVCLI = new VirtualCLI("ds-cli-example", 5 * 60, $shell, "bash", ";");
 
 // Change directories to the home folder
 $myVCLI->add_command("ls -la");
