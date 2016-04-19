@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>0</SubVersion>
  <Release>0</Release>
- <NonRelease>68</NonRelease>
+ <NonRelease>69</NonRelease>
  <Region></Region>
  <ShortVersion>0.0.1</ShortVersion>
  <LongVersion>0.0.1</LongVersion>
@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>20880</BuildFlags>
+ <BuildFlags>29072</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -102,7 +102,7 @@
    <SourceLine></SourceLine>
    <SourceLine>// Process mutexes</SourceLine>
    <SourceLine>Dim bSkipOnMutex As Boolean = False</SourceLine>
-   <SourceLine>If myVShell.LastCommand.InStr("|## mutex ") &gt; -1 Then</SourceLine>
+   <SourceLine>If myVShell.LastCommand.InStr("|## mutex ") &gt; 0 Then</SourceLine>
    <SourceLine>Dim sMutex As String = myVShell.LastCommand.DelLeftMost("|## mutex ").GetLeftMost(" ")</SourceLine>
    <SourceLine>Dim sName As String = myVShell.LastCommand.DelLeftMost("|## mutex " + sMutex + " ") </SourceLine>
    <SourceLine>Select Case sMutex</SourceLine>
@@ -2683,9 +2683,9 @@
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation>App.Process</EditorLocation>
+    <EditorLocation>VCLI.HandleRequest</EditorLocation>
     <EditorPath></EditorPath>
-    <EditingPartID>712812485</EditingPartID>
+    <EditingPartID>1995174002</EditingPartID>
    </Editor>
    <SelectedTab>0</SelectedTab>
   </Editors>
