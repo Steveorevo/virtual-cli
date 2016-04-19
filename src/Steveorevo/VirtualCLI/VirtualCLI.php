@@ -253,11 +253,6 @@ class VirtualCLI {
 				$line = substr($line, 8);
 			}
 
-			// Eat bash prompt
-			if (substr($line, 0, 5) === 'bash-' && strpos($line, "$ ") > 5) {
-				$line = new String($line);
-				$line = $line->delLeftMost("$ ")->__toString();
-			}
 			$prev = $line;
 			$results .= $line . Chr(10);
 		}
