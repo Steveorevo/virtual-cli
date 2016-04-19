@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>0</SubVersion>
  <Release>0</Release>
- <NonRelease>63</NonRelease>
+ <NonRelease>65</NonRelease>
  <Region></Region>
  <ShortVersion>0.0.1</ShortVersion>
  <LongVersion>0.0.1</LongVersion>
@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>20880</BuildFlags>
+ <BuildFlags>29072</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -129,7 +129,7 @@
    <SourceLine>End If</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>Else</SourceLine>
+   <SourceLine>Case Else</SourceLine>
    <SourceLine>Print "Error processing mutexes in App.Process" + App.EOL</SourceLine>
    <SourceLine>End Select</SourceLine>
    <SourceLine>End If</SourceLine>
@@ -2224,6 +2224,7 @@
    <SourceLine>Case "is_done"</SourceLine>
    <SourceLine>// Return if a given command is done or if everything is finished</SourceLine>
    <SourceLine>If App.Shells.HasKey(jsArgs.Lookup("console_id", "")) Then</SourceLine>
+   <SourceLineBreakpoint>72</SourceLineBreakpoint>
    <SourceLine>myVShell = App.Shells.Value(jsArgs.Lookup("console_id", ""))</SourceLine>
    <SourceLine>If jsArgs.Lookup("wait_for", "") = "-1" Then</SourceLine>
    <SourceLine>If myVShell.State = VShell.DONE And myVShell.Commands.Ubound = -1 Then</SourceLine>
@@ -2442,7 +2443,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Paused As Boolean = True</SourceLine>
+   <SourceLine>Paused As Boolean</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -2526,7 +2527,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>IsDone As String = ","</SourceLine>
+   <SourceLine>IsDone As String</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>

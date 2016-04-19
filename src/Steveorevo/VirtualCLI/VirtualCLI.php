@@ -168,7 +168,7 @@ class VirtualCLI {
 	 *
 	 * @param string $command The command to execute on the native virtual commandline interface.
 	 * @param null $wait Seconds (int) or the substring value to wait for from the command before continuing.
-	 * @param null $callback An optional callback to invoke when $wait parameter has been met. Note: causes blocking.
+	 * @param null $callback An optional callback to invoke when $wait parameter has been met. Note: causes blocking, ensure vcli is started!
 	 * @param null $eol Allows override to send "press key" events (sans line feed or carriage return), i.e. Press 'Y'
 	 *
 	 * @return int A unique number that identifies the submitted command, aka "command_id".
@@ -201,7 +201,7 @@ class VirtualCLI {
 
 			// Wait for completion
 			while ("0" === $this->is_done($command_id)) {
-				usleep(100);
+				usleep(500);
 			}
 			call_user_func( $callback, $this->get_results($command_id));
 		}
@@ -209,8 +209,8 @@ class VirtualCLI {
 	}
 
 	/**
-	 * Get the current results from the virtual commandline interface. Specify an optional command_id to retrieve a
-	 * command's specific results or none (-1 default) to return all results of the given session.
+	 * Get the current results from the virtual commandline interface. Non-blocking. Specify an optional command_id to
+	 * retrieve a command's specific results or none (-1 default) to return all results of the current given session.
 	 *
 	 * @param int $command_id Optional id of a specific command to get the results for or -1 (default) to return all
 	 *
@@ -258,11 +258,11 @@ class VirtualCLI {
 			'console_id'    =>  $this->id,
 			'action'        =>  'is_done'
 		);
-		return VCLIManager::send($args);
+		return VCLIManager::send($args) === "1";
 	}
 
 	/**
-	 * Close the given virtual commandline interface.
+	 * Close the given virtual commandline.
 	 */
 	public function close() {
 		$args = array(
