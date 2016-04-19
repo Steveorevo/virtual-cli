@@ -70,7 +70,7 @@ class VirtualCLI {
 			);
 			VCLIManager::send($args);
 
-		// Check for existing instance by name and create it if nec
+			// Check for existing instance by name and create it if nec
 		}else{
 			if (! VCLIManager::has_cli($id)) {
 				$args = array(
@@ -229,6 +229,7 @@ class VirtualCLI {
 		$results = "";
 		$prev = "";
 		foreach ($lines as $line) {
+
 			// Hide passwords in response to prompts
 			if (substr(strtolower($prev), 0, 8) === "password") {
 				$line = "********" . $this->eol;
@@ -238,6 +239,18 @@ class VirtualCLI {
 			if (false !== strpos($line, "***done***")) {
 				$line = str_replace($this->concat_char . "echo ***done***", "", $line);
 				$line = str_replace("***done***", "", $line);
+			}
+
+			// Eat echo'd command on Windows
+			if (VCLIManager::$platform === 'win32') {
+				if ($line === substr($prev, -strlen($line)) && strlen($prev) > strlen($line)) {
+					continue;
+				}
+			}
+
+			// Eat invisible [?1034h
+			if (substr($line, 0, 8) === '[?1034h') {
+				$line = substr($line, 8);
 			}
 			$prev = $line;
 			$results .= $line . Chr(10);
