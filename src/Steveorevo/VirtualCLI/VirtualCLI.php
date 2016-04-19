@@ -177,9 +177,9 @@ class VirtualCLI {
 	{
 		if ($eol === null && $wait === null) {
 
-			// Default to adding a sequential command that won't continue until '***done***'.
-			$command .= $this->concat_char . "echo ***done***";
-			$wait = '***done***';
+			// Default to adding a sequential command that won't continue until '~~~done~~~'.
+			$command .= $this->concat_char . "echo ~~~done~~~";
+			$wait = '~~~done~~~';
 		}
 		if ($eol === null) {
 			$eol = $this->eol;
@@ -224,7 +224,7 @@ class VirtualCLI {
 		);
 		$results = VCLIManager::send($args);
 
-		// Filter out password and ***done*** echos if present
+		// Filter out password and ~~~done~~~ echos if present
 		$lines = explode(Chr(10), $results);
 		$results = "";
 		$prev = "";
@@ -236,9 +236,9 @@ class VirtualCLI {
 			}
 
 			// Hide done waiting mechanism
-			if (false !== strpos($line, "***done***")) {
-				$line = str_replace($this->concat_char . "echo ***done***", "", $line);
-				$line = str_replace("***done***", "", $line);
+			if (false !== strpos($line, "~~~done~~~")) {
+				$line = str_replace($this->concat_char . "echo ~~~done~~~", "", $line);
+				$line = str_replace("~~~done~~~", "", $line);
 			}
 
 			// Eat echo'd command on Windows
