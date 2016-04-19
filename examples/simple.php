@@ -10,7 +10,7 @@ include('../src/Steveorevo/VirtualCLI/VirtualCLI.php');
 use Steveorevo\VirtualCLI\VCLIManager;
 use Steveorevo\VirtualCLI\VirtualCLI;
 
-// Create a new virtual command line interface named "test"
+// Create a new virtual command line interface named "test" (or continue accessing an existing one of that name)
 $myVCLI = new VirtualCLI("test");
 
 // Queue typing 'ls' or 'dir' (Windows) on the command line
@@ -28,7 +28,7 @@ while(false === $myVCLI->is_done()) {
 	usleep(1000); // Wait a second
 }
 
-// Echo by the console history
+// Echo out the console history
 echo $myVCLI->get_results();
 
 // Close the terminal
