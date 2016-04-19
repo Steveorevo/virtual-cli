@@ -1,14 +1,38 @@
 <?php
 /**
- * Get the current folder directory listing.
+ * Open a virtual command line, get the current directory listing, then close command line. It's best practice to close
+ * the terminal when we don't need it anymore otherwise it will persist in memory. We later shutdown the vcli daemon
+ * (use wisely as this will close down all the terminals, regardless of who created them or if we forgot to close 'em).
  *
- * To use this example, move this file above vendor.
  */
-require __DIR__ . '/vendor/autoload.php';
+require('../vendor/autoload.php');
+include('../src/Steveorevo/VirtualCLI/VirtualCLI.php');
+use Steveorevo\VirtualCLI\VCLIManager;
 use Steveorevo\VirtualCLI\VirtualCLI;
 
-$myVCLI = new VirtualCLI("Test");
-$myVCLI->add_command('ls');
-$myVCLI->get_results(function($r){
-	echo $r;
-});
+// Create a new virtual command line interface named "test"
+$myVCLI = new VirtualCLI("test");
+
+// Queue typing 'ls' or 'dir' (Windows) on the command line
+if (VCLIManager::$platform === 'win32') {
+	$myVCLI->add_command('dir');
+}else{
+	$myVCLI->add_command('ls');
+}
+
+// Start processing commands in queue
+$myVCLI->start();
+
+// Wait until the queue is done
+while(false === $myVCLI->is_done()) {
+	usleep(1000); // Wait a second
+}
+
+// Echo by the console history
+echo $myVCLI->get_results();
+
+// Close the terminal
+$myVCLI->close();
+
+// Shutdown the VCLI daemon
+VCLIManager::shutdown();
