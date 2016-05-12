@@ -5,7 +5,7 @@
  * and centralizes common Virtual CLI functionality.
  */
 namespace Steveorevo\VirtualCLI;
-use Steveorevo\String;
+use Steveorevo\GString;
 
 class VCLIManager {
 	static $security_key;
@@ -51,7 +51,7 @@ class VCLIManager {
 			exec("tasklist.exe", $ps);
 			foreach($ps as $p) {
 				if (false !== strpos($p, "vcli.exe")) {
-					$p = new String($p);
+					$p = new GString($p);
 					$process_id = intval($p->delLeftMost("vcli.exe")->trim()->getLeftMost(" ")->__toString());
 					break;
 				}
@@ -150,7 +150,7 @@ class VCLIManager {
 		$args = array(
 			'action'        =>  'ids'
 		);
-		$results = new String(VCLIManager::send($args));
+		$results = new GString(VCLIManager::send($args));
 		return explode("\r\n", $results->delRightMost("\r\n")->__toString());
 	}
 

@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7f8bacbc8b8afdc8c44a245b37100eb2",
-    "content-hash": "324734505f079ec158f90981ff3be855",
+    "hash": "5ec791d1684dda6f371762217221e62f",
+    "content-hash": "4d57614726c331049f72540a0eed6cf3",
     "packages": [
         {
-            "name": "steveorevo/string",
-            "version": "1.0.3",
+            "name": "steveorevo/gstring",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Steveorevo/String.git",
-                "reference": "99311a1bca560b9d619b3251421eacc94e548010"
+                "url": "https://github.com/Steveorevo/GString.git",
+                "reference": "d02ea3384e7c0df92892c868f258d246f64d48d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Steveorevo/String/zipball/99311a1bca560b9d619b3251421eacc94e548010",
-                "reference": "99311a1bca560b9d619b3251421eacc94e548010",
+                "url": "https://api.github.com/repos/Steveorevo/GString/zipball/d02ea3384e7c0df92892c868f258d246f64d48d7",
+                "reference": "d02ea3384e7c0df92892c868f258d246f64d48d7",
                 "shasum": ""
             },
             "type": "library",
@@ -46,12 +46,12 @@
                 }
             ],
             "description": "Implements OOP String handling with useful parsing functions.",
-            "homepage": "https://github.com/Steveorevo/String",
+            "homepage": "https://github.com/Steveorevo/GString",
             "keywords": [
                 "OOP",
                 "string"
             ],
-            "time": "2015-09-30 21:15:27"
+            "time": "2016-05-11 20:05:40"
         }
     ],
     "packages-dev": [],

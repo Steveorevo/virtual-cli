@@ -6,7 +6,7 @@
  */
 namespace Steveorevo\VirtualCLI;
 use Steveorevo\VirtualCLI\VCLIManager;
-use Steveorevo\String;
+use Steveorevo\GString;
 
 // Ensure Virtual CLI Manager is initialized
 VCLIManager::init();

@@ -14,7 +14,7 @@
     }
   ],
   "require": {
-    "steveorevo/string": "1.*"
+    "steveorevo/gstring": "1.1.*"
   },
   "autoload": {
     "psr-0": {
