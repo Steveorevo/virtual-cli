@@ -14,12 +14,14 @@ use Steveorevo\VirtualCLI\VirtualCLI;
 // Determine the shell runtime via DS-CLI's boot script for the given platform
 if (VCLIManager::$platform === 'win32') {
 	$shell = '"c:\\xampplite\\ds-plugins\\ds-cli\\platform\\win32\\boot.bat" bash.exe --posix -i';
+	$wait = 0;
 }else{
 	$shell = "/Applications/XAMPP/ds-plugins/ds-cli/platform/mac/boot.sh bash";
+	$wait = "bash";
 }
 
 // Create a new virtual command line interface running bash with a 5 minute timeout
-$myVCLI = new VirtualCLI("ds-cli-example", 5 * 60, $shell, "bash", ";");
+$myVCLI = new VirtualCLI("ds-cli-example", 5 * 60, $shell, $wait, ";");
 
 // Change directories to the home folder
 $myVCLI->add_command("ls -la");
