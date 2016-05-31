@@ -8,9 +8,6 @@ namespace Steveorevo\VirtualCLI;
 use Steveorevo\VirtualCLI\VCLIManager;
 use Steveorevo\GString;
 
-// Ensure Virtual CLI Manager is initialized
-VCLIManager::init();
-
 class VirtualCLI {
 	public $concat_char = ";";
 	public $callbacks = [];
