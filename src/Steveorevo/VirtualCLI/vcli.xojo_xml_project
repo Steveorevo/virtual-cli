@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RBProject version="2014r2" FormatVersion="2" MinIDEVersion="20070100">
+<RBProject version="2016r2" FormatVersion="2" MinIDEVersion="20070100">
 <block type="Project" ID="0">
- <ProjectSavedInVers>2014.02</ProjectSavedInVers>
+ <ProjectSavedInVers>2016.02</ProjectSavedInVers>
  <MajorVersion>1</MajorVersion>
  <MinorVersion>0</MinorVersion>
- <SubVersion>0</SubVersion>
+ <SubVersion>1</SubVersion>
  <Release>0</Release>
- <NonRelease>69</NonRelease>
+ <NonRelease>71</NonRelease>
  <Region></Region>
- <ShortVersion>0.0.1</ShortVersion>
- <LongVersion>0.0.1</LongVersion>
+ <ShortVersion>1.0.1</ShortVersion>
+ <LongVersion>1.0.1</LongVersion>
  <InfoVersion></InfoVersion>
  <AutoIncVersion>1</AutoIncVersion>
  <DefaultViewID>0</DefaultViewID>
@@ -17,13 +17,12 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>29072</BuildFlags>
+ <BuildFlags>20880</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
  </Icon>
  <MacCreator></MacCreator>
- <BuildCarbonName>vcli</BuildCarbonName>
  <BuildCarbonMachOName>vcli</BuildCarbonMachOName>
  <BundleIdentifier>com.serverpress.vcli</BundleIdentifier>
  <WinMDICaption></WinMDICaption>
@@ -67,6 +66,15 @@
    <SourceLine>App.SecurityKey = param.DelLeftMost("--security_key ").GetLeftMost(" ")</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>// Allow only one unique instance on the given port</SourceLine>
+   <SourceLine>mUnique = New Mutex("vcli_" + CStr(App.Port))</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Not mUnique.TryEnter Then</SourceLine>
+   <SourceLine>Print "Virtual CLI instance already running on port " + CStr(App.Port)</SourceLine>
+   <SourceLine>mUnique = Nil</SourceLine>
+   <SourceLine>Quit</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>// Create storage for our shell consoles</SourceLine>
    <SourceLine>App.Shells = New Dictionary</SourceLine>
    <SourceLine></SourceLine>
@@ -83,6 +91,11 @@
    <SourceLine>Process</SourceLine>
    <SourceLine>App.DoEvents 100</SourceLine>
    <SourceLine>Wend</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Release instance mutex</SourceLine>
+   <SourceLine>If mUnique &lt;&gt; Nil Then</SourceLine>
+   <SourceLine>mUnique.Leave</SourceLine>
+   <SourceLine>End If</SourceLine>
    <SourceLine>End Function</SourceLine>
   </ItemSource>
  </HookInstance>
@@ -320,7 +333,21 @@
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
- <PropertyVal Name="MenuBar"><Hex bytes="1">30</Hex></PropertyVal>
+ <Property>
+  <ItemName>mUnique</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>mUnique As Mutex</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>mUnique As Mutex</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
+ <PropertyVal Name="MenuBar">0</PropertyVal>
  <ViewBehavior>
   <ViewProperty>
    <ObjName>ExitVCLI</ObjName>
@@ -579,30 +606,21 @@
    <Visible>1</Visible>
    <PropertyGroup>ID</PropertyGroup>
    <ItemType>String</ItemType>
+   <EditorType>String</EditorType>
   </ViewProperty>
   <ViewProperty>
    <ObjName>Index</ObjName>
    <Visible>1</Visible>
    <PropertyGroup>ID</PropertyGroup>
    <ItemType>Integer</ItemType>
+   <EditorType>Integer</EditorType>
   </ViewProperty>
   <ViewProperty>
    <ObjName>Super</ObjName>
    <Visible>1</Visible>
    <PropertyGroup>ID</PropertyGroup>
    <ItemType>String</ItemType>
-  </ViewProperty>
-  <ViewProperty>
-   <ObjName>Left</ObjName>
-   <Visible>1</Visible>
-   <PropertyGroup>Position</PropertyGroup>
-   <ItemType>Integer</ItemType>
-  </ViewProperty>
-  <ViewProperty>
-   <ObjName>Top</ObjName>
-   <Visible>1</Visible>
-   <PropertyGroup>Position</PropertyGroup>
-   <ItemType>Integer</ItemType>
+   <EditorType>String</EditorType>
   </ViewProperty>
   <ViewProperty>
    <ObjName>Address</ObjName>
@@ -1155,6 +1173,7 @@
    <Visible>1</Visible>
    <PropertyGroup>ID</PropertyGroup>
    <ItemType>String</ItemType>
+   <EditorType>String</EditorType>
   </ViewProperty>
   <ViewProperty>
    <ObjName>Index</ObjName>
@@ -1162,26 +1181,14 @@
    <PropertyGroup>ID</PropertyGroup>
    <PropertyValue>-2147483648</PropertyValue>
    <ItemType>Integer</ItemType>
+   <EditorType>Integer</EditorType>
   </ViewProperty>
   <ViewProperty>
    <ObjName>Super</ObjName>
    <Visible>1</Visible>
    <PropertyGroup>ID</PropertyGroup>
    <ItemType>String</ItemType>
-  </ViewProperty>
-  <ViewProperty>
-   <ObjName>Left</ObjName>
-   <Visible>1</Visible>
-   <PropertyGroup>Position</PropertyGroup>
-   <PropertyValue>0</PropertyValue>
-   <ItemType>Integer</ItemType>
-  </ViewProperty>
-  <ViewProperty>
-   <ObjName>Top</ObjName>
-   <Visible>1</Visible>
-   <PropertyGroup>Position</PropertyGroup>
-   <PropertyValue>0</PropertyValue>
-   <ItemType>Integer</ItemType>
+   <EditorType>String</EditorType>
   </ViewProperty>
  </ViewBehavior>
  <Constant>
@@ -1189,7 +1196,6 @@
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <TextEncoding>134217984</TextEncoding>
-  <ItemName>StatusNotFound</ItemName>
   <ItemType>0</ItemType>
   <ItemDef>404 Not Found</ItemDef>
   <ItemFlags>0</ItemFlags>
@@ -1199,7 +1205,6 @@
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <TextEncoding>134217984</TextEncoding>
-  <ItemName>StatusOK</ItemName>
   <ItemType>0</ItemType>
   <ItemDef>200 OK</ItemDef>
   <ItemFlags>0</ItemFlags>
@@ -1209,7 +1214,6 @@
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <TextEncoding>134217984</TextEncoding>
-  <ItemName>StatusServerError</ItemName>
   <ItemType>0</ItemType>
   <ItemDef>500 Server Error</ItemDef>
   <ItemFlags>0</ItemFlags>
@@ -1219,7 +1223,6 @@
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <TextEncoding>134217984</TextEncoding>
-  <ItemName>Version</ItemName>
   <ItemType>2</ItemType>
   <ItemDef>1.0</ItemDef>
   <ItemFlags>0</ItemFlags>
@@ -2651,7 +2654,6 @@
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <TextEncoding>134217984</TextEncoding>
-  <ItemName>PENDING</ItemName>
   <ItemType>2</ItemType>
   <ItemDef>1</ItemDef>
   <ItemFlags>0</ItemFlags>
@@ -2661,7 +2663,6 @@
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <TextEncoding>134217984</TextEncoding>
-  <ItemName>RUNNING</ItemName>
   <ItemType>2</ItemType>
   <ItemDef>2</ItemDef>
   <ItemFlags>0</ItemFlags>
@@ -2671,7 +2672,6 @@
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <TextEncoding>134217984</TextEncoding>
-  <ItemName>DONE</ItemName>
   <ItemType>2</ItemType>
   <ItemDef>3</ItemDef>
   <ItemFlags>0</ItemFlags>
@@ -2679,13 +2679,15 @@
 </block>
 <block type="UIState" ID="0">
  <StudioWindowState>
+  <EditBounds><Rect left="1" top="23" width="1201" height="805"/></EditBounds>
+  <WindowMaximized>0</WindowMaximized>
   <Editors>
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation>VCLI.HandleRequest</EditorLocation>
+    <EditorLocation></EditorLocation>
     <EditorPath></EditorPath>
-    <EditingPartID>1995174002</EditingPartID>
+    <EditorPath></EditorPath>
    </Editor>
    <SelectedTab>0</SelectedTab>
   </Editors>
