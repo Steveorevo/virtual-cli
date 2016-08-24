@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>1</SubVersion>
  <Release>0</Release>
- <NonRelease>71</NonRelease>
+ <NonRelease>72</NonRelease>
  <Region></Region>
  <ShortVersion>1.0.1</ShortVersion>
  <LongVersion>1.0.1</LongVersion>
@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>20880</BuildFlags>
+ <BuildFlags>29072</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -2156,6 +2156,10 @@
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
    <SourceLine>Sub HandleRequest(ByRef Request As cRequest, ByRef Response As cResponse, ByRef HTTPServer As cHTTPServer)</SourceLine>
+   <SourceLine>// Implement CORS schema for alt. port communications</SourceLine>
+   <SourceLine>Response.Headers.Value("Origin") = "http://127.0.0.1:" + CStr(App.Port)</SourceLine>
+   <SourceLine>Response.Headers.Value("Access-Control-Allow-Origin") = "http://127.0.0.1:" + CStr(App.Port - 1)</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>// Test security key</SourceLine>
    <SourceLine>Dim s As String = Request.Query("s")</SourceLine>
    <SourceLine>If s &lt;&gt; App.SecurityKey Then</SourceLine>
@@ -2678,15 +2682,30 @@
  </Constant>
 </block>
 <block type="UIState" ID="0">
+ <BreakPointGroup>
+  <PartID>1995174002</PartID>
+  <ItemName></ItemName>
+  <UnitType>Method</UnitType>
+  <UnitID>Sub HandleRequest(ByRef Request As cRequest, ByRef Response As cResponse, ByRef HTTPServer As cHTTPServer)</UnitID>
+  <lineNum>143</lineNum>
+ </BreakPointGroup>
+ <BreakPointGroup>
+  <PartID>1995174002</PartID>
+  <ItemName></ItemName>
+  <UnitType>Method</UnitType>
+  <UnitID>Sub HandleRequest(ByRef Request As cRequest, ByRef Response As cResponse, ByRef HTTPServer As cHTTPServer)</UnitID>
+  <lineNum>148</lineNum>
+ </BreakPointGroup>
  <StudioWindowState>
-  <EditBounds><Rect left="1" top="23" width="1201" height="805"/></EditBounds>
+  <EditBounds><Rect left="0" top="22" width="1440" height="824"/></EditBounds>
   <WindowMaximized>0</WindowMaximized>
   <Editors>
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation></EditorLocation>
+    <EditorLocation>VCLI.HandleRequest</EditorLocation>
     <EditorPath></EditorPath>
+    <EditingPartID>1995174002</EditingPartID>
     <EditorPath></EditorPath>
    </Editor>
    <SelectedTab>0</SelectedTab>
