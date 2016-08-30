@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>1</SubVersion>
  <Release>0</Release>
- <NonRelease>74</NonRelease>
+ <NonRelease>76</NonRelease>
  <Region></Region>
  <ShortVersion>1.0.1</ShortVersion>
  <LongVersion>1.0.1</LongVersion>
@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>20880</BuildFlags>
+ <BuildFlags>29072</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -74,6 +74,14 @@
    <SourceLine>mUnique = Nil</SourceLine>
    <SourceLine>Quit</SourceLine>
    <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Allow debug mode</SourceLine>
+   <SourceLine>If param.InStr("--debug") &gt; 0 Then</SourceLine>
+   <SourceLine>App.Debug = True</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>#If DebugBuild Then</SourceLine>
+   <SourceLine>App.Debug = True</SourceLine>
+   <SourceLine>#EndIf</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Create storage for our shell consoles</SourceLine>
    <SourceLine>App.Shells = New Dictionary</SourceLine>
@@ -344,6 +352,20 @@
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
   <ItemDeclaration>mUnique As Mutex</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
+ <Property>
+  <ItemName>Debug</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Debug As Boolean = False</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>Debug As Boolean = False</ItemDeclaration>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
@@ -2177,6 +2199,10 @@
    <SourceLine>Exit Sub</SourceLine>
    <SourceLine>End Try</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>If App.Debug Then</SourceLine>
+   <SourceLine>Print "Receiving &lt;&lt;&lt; " + jsArgs.ToString</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>// Process the given action</SourceLine>
    <SourceLine>Dim myVShell As VShell</SourceLine>
    <SourceLine>Select Case jsArgs.Lookup("action", "")</SourceLine>
@@ -2298,6 +2324,10 @@
    <SourceLine></SourceLine>
    <SourceLine>End Select</SourceLine>
    <SourceLine>Response.Status = App.myHTTPServer.StatusOK</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If App.Debug Then</SourceLine>
+   <SourceLine>Print "Sending &gt;&gt;&gt; " + Response.sBuffer</SourceLine>
+   <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Report any runtime errors</SourceLine>
    <SourceLine>Exit Sub</SourceLine>
@@ -2681,20 +2711,6 @@
  </Constant>
 </block>
 <block type="UIState" ID="0">
- <BreakPointGroup>
-  <PartID>1995174002</PartID>
-  <ItemName></ItemName>
-  <UnitType>Method</UnitType>
-  <UnitID>Sub HandleRequest(ByRef Request As cRequest, ByRef Response As cResponse, ByRef HTTPServer As cHTTPServer)</UnitID>
-  <lineNum>142</lineNum>
- </BreakPointGroup>
- <BreakPointGroup>
-  <PartID>1995174002</PartID>
-  <ItemName></ItemName>
-  <UnitType>Method</UnitType>
-  <UnitID>Sub HandleRequest(ByRef Request As cRequest, ByRef Response As cResponse, ByRef HTTPServer As cHTTPServer)</UnitID>
-  <lineNum>147</lineNum>
- </BreakPointGroup>
  <StudioWindowState>
   <EditBounds><Rect left="0" top="23" width="1440" height="824"/></EditBounds>
   <WindowMaximized>0</WindowMaximized>
