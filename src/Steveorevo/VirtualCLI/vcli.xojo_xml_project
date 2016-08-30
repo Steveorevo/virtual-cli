@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>29072</BuildFlags>
+ <BuildFlags>20880</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -305,11 +305,11 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Port As Integer</SourceLine>
+   <SourceLine>Port As Integer = 8089</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>Port As Integer = 7088</ItemDeclaration>
+  <ItemDeclaration>Port As Integer = 8089</ItemDeclaration>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
@@ -361,7 +361,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Debug As Boolean = False</SourceLine>
+   <SourceLine>Debug As Boolean</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -395,6 +395,12 @@
    <PropertyGroup>Behavior</PropertyGroup>
    <ItemType>String</ItemType>
    <EditorType>MultiLineEditor</EditorType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Debug</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <PropertyValue>False</PropertyValue>
+   <ItemType>Boolean</ItemType>
   </ViewProperty>
  </ViewBehavior>
 </block>
@@ -2711,6 +2717,16 @@
  </Constant>
 </block>
 <block type="UIState" ID="0">
+ <WarningPreferences>
+  <ItemName>5</ItemName>
+  <ItemData>0</ItemData>
+  <ItemName>6</ItemName>
+  <ItemData>0</ItemData>
+  <ItemName>7</ItemName>
+  <ItemData>0</ItemData>
+  <ItemName>14</ItemName>
+  <ItemData>0</ItemData>
+ </WarningPreferences>
  <StudioWindowState>
   <EditBounds><Rect left="0" top="23" width="1440" height="824"/></EditBounds>
   <WindowMaximized>0</WindowMaximized>
