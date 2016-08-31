@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>1</SubVersion>
  <Release>0</Release>
- <NonRelease>76</NonRelease>
+ <NonRelease>79</NonRelease>
  <Region></Region>
  <ShortVersion>1.0.1</ShortVersion>
  <LongVersion>1.0.1</LongVersion>
@@ -305,7 +305,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Port As Integer = 8089</SourceLine>
+   <SourceLine>Port As Integer</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -2209,6 +2209,17 @@
    <SourceLine>Print "Receiving &lt;&lt;&lt; " + jsArgs.ToString</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>// Ignore duplicate send_id</SourceLine>
+   <SourceLine>Dim NewSendID As String = jsArgs.Lookup("send_id", "")</SourceLine>
+   <SourceLine>If NewSendID = LastSendID And NewSendID &lt;&gt; "" Then</SourceLine>
+   <SourceLine>If App.Debug Then</SourceLine>
+   <SourceLine>Print "Ignoring duplicate send_id !!! " + NewSendID</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Response.Status = App.myHTTPServer.StatusOK</SourceLine>
+   <SourceLine>Exit Sub</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>LastSendID = NewSendID</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>// Process the given action</SourceLine>
    <SourceLine>Dim myVShell As VShell</SourceLine>
    <SourceLine>Select Case jsArgs.Lookup("action", "")</SourceLine>
@@ -2350,6 +2361,20 @@
   <ItemParams>ByRef Request As cRequest, ByRef Response As cResponse, ByRef HTTPServer As cHTTPServer</ItemParams>
   <ItemResult></ItemResult>
  </Method>
+ <Property>
+  <ItemName>LastSendID</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>LastSendID As String</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>LastSendID As String</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
  <ViewBehavior>
   <ViewProperty>
    <ObjName>Name</ObjName>
@@ -2383,6 +2408,11 @@
    <PropertyGroup>Position</PropertyGroup>
    <PropertyValue>0</PropertyValue>
    <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>LastSendID</ObjName>
+   <PropertyGroup>Behavior</PropertyGroup>
+   <ItemType>String</ItemType>
   </ViewProperty>
  </ViewBehavior>
 </block>
