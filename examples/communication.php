@@ -12,6 +12,7 @@ use Steveorevo\VirtualCLI\VCLIManager;
 use Steveorevo\VirtualCLI\VirtualCLI;
 
 // Determine the shell runtime via DS-CLI's boot script for the given platform
+VCLIManager::init();
 if (VCLIManager::$platform === 'win32') {
 	$shell = '"c:\\xampplite\\ds-plugins\\ds-cli\\platform\\win32\\boot.bat" bash.exe --posix -i';
 	$wait = 0;

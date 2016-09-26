@@ -10,6 +10,7 @@ use Steveorevo\VirtualCLI\VCLIManager;
 use Steveorevo\VirtualCLI\VirtualCLI;
 
 // Create a new virtual command line interface named "test" (or access an existing one by that name)
+VCLIManager::init();
 $myVCLI = new VirtualCLI("test");
 
 // Start processing commands as we interactively add them

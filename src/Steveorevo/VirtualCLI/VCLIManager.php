@@ -164,7 +164,3 @@ class VCLIManager {
 		VCLIManager::send($args);
 	}
 }
-
-// Ensure Virtual CLI Manager is initialized
-VCLIManager::init();
-

@@ -11,6 +11,7 @@ use Steveorevo\VirtualCLI\VCLIManager;
 use Steveorevo\VirtualCLI\VirtualCLI;
 
 // Create a new virtual command line interface named "test" (or continue accessing an existing one of that name)
+VCLIManager::init();
 $myVCLI = new VirtualCLI("test");
 
 // Queue typing 'ls' or 'dir' (Windows) on the command line
