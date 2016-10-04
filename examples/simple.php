@@ -21,6 +21,9 @@ if (VCLIManager::$platform === 'win32') {
 	$myVCLI->add_command('ls');
 }
 
+// List any existing consoles
+var_dump( VCLIManager::cli_list( 2 ) );
+
 // Start processing commands in queue
 $myVCLI->start();
 
@@ -31,6 +34,9 @@ while(false === $myVCLI->is_done()) {
 
 // Echo out the console history
 echo $myVCLI->get_results();
+
+// List any existing consoles
+var_dump( VCLIManager::cli_list( 2 ) );
 
 // Close the terminal
 $myVCLI->close();

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RBProject version="2016r2" FormatVersion="2" MinIDEVersion="20070100">
+<RBProject version="2016r2.1" FormatVersion="2" MinIDEVersion="20070100">
 <block type="Project" ID="0">
- <ProjectSavedInVers>2016.02</ProjectSavedInVers>
+ <ProjectSavedInVers>2016.021</ProjectSavedInVers>
  <MajorVersion>1</MajorVersion>
  <MinorVersion>0</MinorVersion>
  <SubVersion>1</SubVersion>
  <Release>0</Release>
- <NonRelease>79</NonRelease>
+ <NonRelease>86</NonRelease>
  <Region></Region>
  <ShortVersion>1.0.1</ShortVersion>
  <LongVersion>1.0.1</LongVersion>
@@ -2268,7 +2268,26 @@
    <SourceLine>Case "ids"</SourceLine>
    <SourceLine>// Return all shell ids</SourceLine>
    <SourceLine>For Each ids As String In App.Shells.Keys</SourceLine>
+   <SourceLine>If jsArgs.Lookup("list_option", 0) = 0 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Return all ids</SourceLine>
    <SourceLine>Response.Write(CStr(ids) + App.EOL)</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>myVShell = App.Shells.Value(ids)</SourceLine>
+   <SourceLine>If jsArgs.Lookup("list_option", 0) = 1 Then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Return RUNNING and PENDING ids</SourceLine>
+   <SourceLine>If myVShell.State = VShell.PENDING Or myVShell.State = VShell.RUNNING Then</SourceLine>
+   <SourceLine>Response.Write(CStr(ids) + App.EOL)</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Return all DONE ids</SourceLine>
+   <SourceLine>If myVShell.State = VShell.DONE Then</SourceLine>
+   <SourceLine>Response.Write(CStr(ids) + App.EOL)</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End If</SourceLine>
    <SourceLine>Next</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "is_done"</SourceLine>
@@ -2413,6 +2432,7 @@
    <ObjName>LastSendID</ObjName>
    <PropertyGroup>Behavior</PropertyGroup>
    <ItemType>String</ItemType>
+   <EditorType>MultiLineEditor</EditorType>
   </ViewProperty>
  </ViewBehavior>
 </block>
@@ -2758,7 +2778,7 @@
   <ItemData>0</ItemData>
  </WarningPreferences>
  <StudioWindowState>
-  <EditBounds><Rect left="0" top="23" width="1440" height="824"/></EditBounds>
+  <EditBounds><Rect left="0" top="23" width="1440" height="823"/></EditBounds>
   <WindowMaximized>0</WindowMaximized>
   <Editors>
    <EditorCount>1</EditorCount>
