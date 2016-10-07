@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RBProject version="2016r2.1" FormatVersion="2" MinIDEVersion="20070100">
+<RBProject version="2016r3" FormatVersion="2" MinIDEVersion="20070100">
 <block type="Project" ID="0">
- <ProjectSavedInVers>2016.021</ProjectSavedInVers>
+ <ProjectSavedInVers>2016.03</ProjectSavedInVers>
  <MajorVersion>1</MajorVersion>
  <MinorVersion>0</MinorVersion>
  <SubVersion>1</SubVersion>
  <Release>0</Release>
- <NonRelease>86</NonRelease>
+ <NonRelease>89</NonRelease>
  <Region></Region>
  <ShortVersion>1.0.1</ShortVersion>
  <LongVersion>1.0.1</LongVersion>
@@ -36,6 +36,7 @@
  <BuildLinuxX86Name>vcli</BuildLinuxX86Name>
  <BuildCarbonExecutableFormat>1</BuildCarbonExecutableFormat>
  <DebuggerCommandLine></DebuggerCommandLine>
+ <OptimizationLevel>0</OptimizationLevel>
 </block>
 <block type="Module" ID="712812485">
  <ObjName>App</ObjName>
@@ -159,11 +160,14 @@
    <SourceLine>myVShell.TimeUp = myVShell.MaxTimeout</SourceLine>
    <SourceLine>myVShell.Commands.Remove(0)</SourceLine>
    <SourceLine>myVShell.Waits.Remove(0)</SourceLine>
+   <SourceLine>Dim cmd As String = myVShell.LastCommand.DelLeftMost("|")</SourceLine>
    <SourceLine>If myVShell.IsRunning = False Then</SourceLine>
-   <SourceLine>myVShell.Execute(myVShell.LastCommand.DelLeftMost("|"))</SourceLine>
+   <SourceLine>Print "+++ Executing " + cmd</SourceLine>
+   <SourceLine>myVShell.Execute(cmd)</SourceLine>
    <SourceLine>myVShell.LastCommand = myVShell.LastCommand + App.EOL</SourceLine>
    <SourceLine>Else</SourceLine>
-   <SourceLine>myVShell.Write(myVShell.LastCommand.DelLeftMost("|"))</SourceLine>
+   <SourceLine>Print "+++ Writing " + cmd</SourceLine>
+   <SourceLine>myVShell.Write(cmd)</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Add command to top of results</SourceLine>
@@ -2268,26 +2272,16 @@
    <SourceLine>Case "ids"</SourceLine>
    <SourceLine>// Return all shell ids</SourceLine>
    <SourceLine>For Each ids As String In App.Shells.Keys</SourceLine>
-   <SourceLine>If jsArgs.Lookup("list_option", 0) = 0 Then</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>// Return all ids</SourceLine>
-   <SourceLine>Response.Write(CStr(ids) + App.EOL)</SourceLine>
-   <SourceLine>Else</SourceLine>
    <SourceLine>myVShell = App.Shells.Value(ids)</SourceLine>
-   <SourceLine>If jsArgs.Lookup("list_option", 0) = 1 Then</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>// Return RUNNING and PENDING ids</SourceLine>
-   <SourceLine>If myVShell.State = VShell.PENDING Or myVShell.State = VShell.RUNNING Then</SourceLine>
-   <SourceLine>Response.Write(CStr(ids) + App.EOL)</SourceLine>
-   <SourceLine>End If</SourceLine>
-   <SourceLine>Else</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>// Return all DONE ids</SourceLine>
+   <SourceLine>Dim sState As String = "running"</SourceLine>
    <SourceLine>If myVShell.State = VShell.DONE Then</SourceLine>
-   <SourceLine>Response.Write(CStr(ids) + App.EOL)</SourceLine>
+   <SourceLine>sState = "done"</SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine>If myVShell.Paused = True Then</SourceLine>
+   <SourceLine>sState = "paused"</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine>End If</SourceLine>
-   <SourceLine>End If</SourceLine>
+   <SourceLine>Response.Write(CStr(ids) + Chr(9) + sState + App.EOL)</SourceLine>
    <SourceLine>Next</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "is_done"</SourceLine>
@@ -2778,7 +2772,7 @@
   <ItemData>0</ItemData>
  </WarningPreferences>
  <StudioWindowState>
-  <EditBounds><Rect left="0" top="23" width="1440" height="823"/></EditBounds>
+  <EditBounds><Rect left="0" top="23" width="1440" height="821"/></EditBounds>
   <WindowMaximized>0</WindowMaximized>
   <Editors>
    <EditorCount>1</EditorCount>
