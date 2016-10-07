@@ -4,12 +4,12 @@
  <ProjectSavedInVers>2016.03</ProjectSavedInVers>
  <MajorVersion>1</MajorVersion>
  <MinorVersion>0</MinorVersion>
- <SubVersion>1</SubVersion>
+ <SubVersion>8</SubVersion>
  <Release>0</Release>
  <NonRelease>90</NonRelease>
  <Region></Region>
- <ShortVersion>1.0.1</ShortVersion>
- <LongVersion>1.0.1</LongVersion>
+ <ShortVersion>1.0.8</ShortVersion>
+ <LongVersion>1.0.8</LongVersion>
  <InfoVersion></InfoVersion>
  <AutoIncVersion>1</AutoIncVersion>
  <DefaultViewID>0</DefaultViewID>
@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>20880</BuildFlags>
+ <BuildFlags>29072</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -2778,9 +2778,8 @@
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation>VCLI.HandleRequest</EditorLocation>
+    <EditorLocation></EditorLocation>
     <EditorPath></EditorPath>
-    <EditingPartID>1995174002</EditingPartID>
     <EditorPath></EditorPath>
    </Editor>
    <SelectedTab>0</SelectedTab>
