@@ -138,20 +138,22 @@ class VCLIManager {
 	 */
 	static function has_cli($id) {
 		$cli_list = VCLIManager::cli_list();
-		return in_array($id, $cli_list);
+		$list = [];
+		foreach($cli_list as $c) {
+			$c = new GString( $c );
+			array_push($list, $c->delRightMost(chr(9))->__toString());
+		}
+		return in_array($id, $list);
 	}
 
 	/**
 	 * Obtain a list of current virtual command line interface sessions.
 	 *
-	 * @param $list_option Options for lising; 0 - default list all, 1 - only list running/pending, 2 - only list done
-	 *
-	 * @return array An array containing a list of current sessions.
+	 * @return array An array containing a list of current sessions and their status
 	 */
-	static function cli_list( $list_option = 0 ) {
+	static function cli_list() {
 		$args = array(
-			'action'        =>  'ids',
-			'list_option'   =>  $list_option
+			'action'        =>  'ids'
 		);
 		$results = new GString(VCLIManager::send($args));
 		if ( trim( $results ) == '' ) {
