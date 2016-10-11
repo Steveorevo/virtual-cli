@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>8</SubVersion>
  <Release>0</Release>
- <NonRelease>90</NonRelease>
+ <NonRelease>100</NonRelease>
  <Region></Region>
  <ShortVersion>1.0.8</ShortVersion>
  <LongVersion>1.0.8</LongVersion>
@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>29072</BuildFlags>
+ <BuildFlags>20880</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -100,6 +100,7 @@
    <SourceLine>Process</SourceLine>
    <SourceLine>App.DoEvents 100</SourceLine>
    <SourceLine>Wend</SourceLine>
+   <SourceLine>App.myHTTPServer.StopListening</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Release instance mutex</SourceLine>
    <SourceLine>If mUnique &lt;&gt; Nil Then</SourceLine>
@@ -161,6 +162,14 @@
    <SourceLine>myVShell.Commands.Remove(0)</SourceLine>
    <SourceLine>myVShell.Waits.Remove(0)</SourceLine>
    <SourceLine>Dim cmd As String = myVShell.LastCommand.DelLeftMost("|")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Exit process right away</SourceLine>
+   <SourceLine>If cmd.Left(8) = "exitVCLI" Then</SourceLine>
+   <SourceLine>myVCLI.Quit</SourceLine>
+   <SourceLine>Exit Sub</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Process given command</SourceLine>
    <SourceLine>If myVShell.IsRunning = False Then</SourceLine>
    <SourceLine>Print "+++ Executing " + cmd</SourceLine>
    <SourceLine>myVShell.Execute(cmd)</SourceLine>
@@ -2192,12 +2201,14 @@
    <SourceLine>Response.Headers.Value("Access-Control-Allow-Origin") = "*"</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Test security key</SourceLine>
+   <SourceLine>#If Not DebugBuild Then</SourceLine>
    <SourceLine>Dim s As String = Request.Query("s")</SourceLine>
    <SourceLine>If s &lt;&gt; App.SecurityKey Then</SourceLine>
    <SourceLine>Print "Security key failed to authenticate" + App.EOL</SourceLine>
    <SourceLine>Response.Status = App.myHTTPServer.StatusServerError</SourceLine>
    <SourceLine>Exit Sub</SourceLine>
    <SourceLine>End If</SourceLine>
+   <SourceLine>#EndIf</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Parse arguments</SourceLine>
    <SourceLine>Dim jsArgs As JSONItem</SourceLine>
@@ -2306,18 +2317,8 @@
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "quit"</SourceLine>
-   <SourceLine>// Close all active shell consoles</SourceLine>
-   <SourceLine>Dim aVShell As VShell</SourceLine>
-   <SourceLine>For Each ids As String In App.Shells.Keys</SourceLine>
-   <SourceLine>aVShell = App.Shells.Value(ids)</SourceLine>
-   <SourceLine>aVShell.Write(Chr(3) + Chr(3)) // double ctrl+c</SourceLine>
-   <SourceLine>aVShell.Write("exit" + App.EOL)</SourceLine>
-   <SourceLine>aVShell.Close</SourceLine>
-   <SourceLine>Next</SourceLine>
    <SourceLine>Response.Status = App.myHTTPServer.StatusOK</SourceLine>
-   <SourceLine>App.myHTTPServer.StopListening</SourceLine>
-   <SourceLine>App.ExitVCLI = true</SourceLine>
-   <SourceLine>App.Shells.Clear</SourceLine>
+   <SourceLine>Self.Quit</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Case "result"</SourceLine>
    <SourceLine>// Return the last result for a given command id or everything</SourceLine>
@@ -2372,6 +2373,34 @@
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
   <ItemParams>ByRef Request As cRequest, ByRef Response As cResponse, ByRef HTTPServer As cHTTPServer</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>Quit</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub Quit()</SourceLine>
+   <SourceLine>// Close all active shell consoles</SourceLine>
+   <SourceLine>Dim aVShell As VShell</SourceLine>
+   <SourceLine>For Each ids As String In App.Shells.Keys</SourceLine>
+   <SourceLine>aVShell = App.Shells.Value(ids)</SourceLine>
+   <SourceLine>aVShell.Write(Chr(3) + Chr(3)) // double ctrl+c</SourceLine>
+   <SourceLine>aVShell.Write("exit" + App.EOL)</SourceLine>
+   <SourceLine>aVShell.Close</SourceLine>
+   <SourceLine>Next</SourceLine>
+   <SourceLine>App.ExitVCLI = true</SourceLine>
+   <SourceLine>App.Shells.Clear</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams></ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Property>
@@ -2778,8 +2807,9 @@
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation></EditorLocation>
+    <EditorLocation>App.Process</EditorLocation>
     <EditorPath></EditorPath>
+    <EditingPartID>712812485</EditingPartID>
     <EditorPath></EditorPath>
    </Editor>
    <SelectedTab>0</SelectedTab>
