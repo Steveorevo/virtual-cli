@@ -15,7 +15,7 @@ class VCLIManager {
 	/**
 	 * Set runtime information.
 	 */
-	static function init($port = 7088) {
+	static function init($port = 8089) {
 
 		// Allow override of default port
 		VCLIManager::$port = $port;
