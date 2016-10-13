@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>8</SubVersion>
  <Release>0</Release>
- <NonRelease>100</NonRelease>
+ <NonRelease>102</NonRelease>
  <Region></Region>
  <ShortVersion>1.0.8</ShortVersion>
  <LongVersion>1.0.8</LongVersion>
@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>20880</BuildFlags>
+ <BuildFlags>29072</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -468,7 +468,7 @@
    <SourceLine></SourceLine>
    <SourceLine>// Get the incoming request from the client</SourceLine>
    <SourceLine>Static sData As String</SourceLine>
-   <SourceLine>sData = sData + Me.ReadAll(Encodings.ASCII)</SourceLine>
+   <SourceLine>sData = sData + Me.ReadAll(Encodings.UTF8)</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// Strip out unecessary CR from Windows systems</SourceLine>
    <SourceLine>sData = ReplaceAll(sData, Chr(13), "")</SourceLine>
@@ -496,10 +496,10 @@
    <SourceLine>While InStr(sPath, "&amp;") &gt; 0</SourceLine>
    <SourceLine>sLine = sPath.GetLeftMost("&amp;")</SourceLine>
    <SourceLine>If InStr(sLine,"=") &gt; 0 Then</SourceLine>
-   <SourceLine>sValue = DecodeURLComponent(sLine.DelLeftMost("="),Encodings.ASCII)</SourceLine>
-   <SourceLine>sKey = DecodeURLComponent(sLine.GetLeftMost("="),Encodings.ASCII)</SourceLine>
+   <SourceLine>sValue = DecodeURLComponent(sLine.DelLeftMost("="),Encodings.UTF8)</SourceLine>
+   <SourceLine>sKey = DecodeURLComponent(sLine.GetLeftMost("="),Encodings.UTF8)</SourceLine>
    <SourceLine>Else</SourceLine>
-   <SourceLine>sValue = DecodeURLComponent(sLine, Encodings.ASCII)</SourceLine>
+   <SourceLine>sValue = DecodeURLComponent(sLine, Encodings.UTF8)</SourceLine>
    <SourceLine>sKey = ""</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine>myRequest.dictQuery.Value(sKey) = sValue</SourceLine>
@@ -2213,7 +2213,7 @@
    <SourceLine>// Parse arguments</SourceLine>
    <SourceLine>Dim jsArgs As JSONItem</SourceLine>
    <SourceLine>Try</SourceLine>
-   <SourceLine>jsArgs = New JSONItem(Request.Query("o"))</SourceLine>
+   <SourceLine>jsArgs = New JSONItem(Request.Query("o").ReplaceAll("~7E", "%")) // Decode percent anomaly</SourceLine>
    <SourceLine>Catch e As JSONException</SourceLine>
    <SourceLine>Print "Missing GET parameter for JSON Object" + App.EOL</SourceLine>
    <SourceLine>Response.Status = App.myHTTPServer.StatusServerError</SourceLine>
@@ -2807,9 +2807,9 @@
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation>App.Process</EditorLocation>
+    <EditorLocation>Extends_String.Quoted</EditorLocation>
     <EditorPath></EditorPath>
-    <EditingPartID>712812485</EditingPartID>
+    <EditingPartID>1453129929</EditingPartID>
     <EditorPath></EditorPath>
    </Editor>
    <SelectedTab>0</SelectedTab>
