@@ -104,7 +104,7 @@ class VCLIManager {
 	static function send($args = []) {
 		$json = json_encode($args);
 		$url = 'http://127.0.0.1:' . VCLIManager::$port . '/vcli?s=' . VCLIManager::$security_key;
-		$url .= '&o=' . rawurlencode($json);
+		$url .= '&o=' . rawurlencode(str_replace("%", "~7E", $json)); // Encode % anomaly
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
