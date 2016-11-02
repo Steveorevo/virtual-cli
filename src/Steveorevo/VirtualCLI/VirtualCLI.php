@@ -11,6 +11,7 @@ use Steveorevo\GString;
 class VirtualCLI {
 	public $concat_char = ";";
 	public $callbacks = [];
+	public $completed = 0;
 	public $eol = "\n";
 	public $id = null;
 
@@ -253,7 +254,11 @@ class VirtualCLI {
 			$prev = $line;
 			$results .= $line . Chr(10);
 		}
-		return $results;
+
+		// Parse out the percent complete from the initial response
+		$results = new GString( $results );
+		$this->completed = intval( $results->getLeftMost("|\n") );
+		return $results->delLeftMost("|\n")->__toString();
 	}
 
 	/**

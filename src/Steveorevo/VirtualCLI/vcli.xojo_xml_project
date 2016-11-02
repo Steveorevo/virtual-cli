@@ -6,7 +6,7 @@
  <MinorVersion>0</MinorVersion>
  <SubVersion>8</SubVersion>
  <Release>0</Release>
- <NonRelease>102</NonRelease>
+ <NonRelease>108</NonRelease>
  <Region></Region>
  <ShortVersion>1.0.8</ShortVersion>
  <LongVersion>1.0.8</LongVersion>
@@ -17,7 +17,7 @@
  <DefaultLanguage>0</DefaultLanguage>
  <CurrentLanguage>0</CurrentLanguage>
  <DefaultEncoding>0</DefaultEncoding>
- <BuildFlags>29072</BuildFlags>
+ <BuildFlags>20880</BuildFlags>
  <UseBuildsFolder>1</UseBuildsFolder>
  <WebApp>0</WebApp>
  <Icon>
@@ -2335,6 +2335,11 @@
    <SourceLine>For Each r As String in myVShell.Results</SourceLine>
    <SourceLine>sHistory = sHistory + r</SourceLine>
    <SourceLine>Next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Calculate and embed percent finished in response</SourceLine>
+   <SourceLine>Dim nDone As Double = myVShell.CommandCount - ((myVShell.Commands.UBound) + 1)</SourceLine>
+   <SourceLine>nDone = 100 * (nDone /  myVShell.CommandCount)</SourceLine>
+   <SourceLine>sHistory = CStr(nDone)+ "|" + Chr(10) + sHistory</SourceLine>
    <SourceLine>Response.Write(sHistory)</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
@@ -2807,9 +2812,9 @@
    <EditorCount>1</EditorCount>
    <Editor>
     <EditorIndex>0</EditorIndex>
-    <EditorLocation>Extends_String.Quoted</EditorLocation>
+    <EditorLocation>VCLI.HandleRequest</EditorLocation>
     <EditorPath></EditorPath>
-    <EditingPartID>1453129929</EditingPartID>
+    <EditingPartID>1995174002</EditingPartID>
     <EditorPath></EditorPath>
    </Editor>
    <SelectedTab>0</SelectedTab>
